@@ -1,6 +1,4 @@
-// hostname = *.mumu.163.com
-// ^https:\/\/api-pro\.mumu\.163\.com\/api\/v1\/user\/info url script-resbonse-body mumu.js
-let body = $response.body;
+let body = JSON.parse($response.body);
 /**
  * @url: https://api-pro.mumu.163.com/api/v1/user/info
  * @body: json
@@ -9,7 +7,7 @@ let body = $response.body;
     "msg": "ok",
     "data": {
         "user_id": "aebglmpozaaaabua",
-        "nickname": "182****9338",
+        "nickname": "fhk",
         "member_expired_at": 0,
         "member_status": 0,
         "enabled_device_count": 1,
@@ -28,7 +26,7 @@ let body = $response.body;
 // body?.data?.member_status=1;
 // body?.data?.current_devic?.trial_end_at=17078399990;
 // body?.data?.current_devic?.trial_status=1;
-body = {
+body = JSON.stringify({
     "code": 0,
     "msg": "ok",
     "data": {
@@ -46,5 +44,5 @@ body = {
             "trial_status": 1
         }
     }
-}
-$done({body});
+})
+$done({ body });
