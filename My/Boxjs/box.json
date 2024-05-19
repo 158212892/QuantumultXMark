@@ -1,0 +1,37 @@
+{
+  "id": "yaowuliu.app.sub",
+  "name": "YaoWuLiu应用订阅",
+  "author": "@YaoWuLiu",
+  "icon": "https://avatars.githubusercontent.com/u/88471740",
+  "repo": "",
+  "apps": [
+    {
+      "id": "yaowuliu_Bilibili_cookie_extraction",
+      "name": "Bilibili_cookie_extraction",
+      "author": "@YaoWuLiu",
+      "repo": "",
+      "icons": [
+        "https://gitlab.com/isous/loonresource/-/raw/main/Icon/Bilibili.png"
+      ],
+      "keys": ["Bilibili_Authorization","Bilibili_User-Agent"],
+      "settings": [
+        {
+          "id": "Bilibili_Authorization",
+          "name": "会员Cookie数据",
+          "val": "",
+          "type": "textarea",
+          "autoGrow": true,
+          "desc": "会员Cookie数据"
+        },
+        {
+          "id": "Bilibili_User-Agent",
+          "name": "设备UA数据",
+          "val": "",
+          "type": "textarea",
+          "autoGrow": true,
+          "desc": "设备UA数据"
+        }
+      ]
+    }
+  ]
+}
