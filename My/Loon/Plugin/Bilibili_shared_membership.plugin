@@ -12,8 +12,7 @@
 http-request ^https?:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.app\.playerunite\.v1\.Player\/PlayViewUnite(\?.+)?$ script-path = https://raw.githubusercontent.com/158212892/QuantumultXMark/main/My/Loon/Scripts/Bilibili_shared_membership.js, tag = iPhone端共享会员
 # http-request ^https?:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.app\.player(unite\.v1\.Player\/PlayViewUnite|online\.v1\.PlayerOnline\/PlayerOnline) script-path = https://raw.githubusercontent.com/158212892/QuantumultXMark/main/My/Loon/Scripts/Bilibili_shared_membership.js, tag = iPhone端共享会员
 http-request ^https?:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.pgc\.gateway\.player\.v2\.PlayURL\/PlayView$ script-path = https://raw.githubusercontent.com/158212892/QuantumultXMark/main/My/Loon/Scripts/Bilibili_shared_membership.js, tag = iPad端共享会员
-
-http-request ^https?:\/\/((app|api)\.(\w{2,15})?\.(com|cn)).*player.*\.(v3|v2|v1).Play(URL|View|er).*$ script-path = https://raw.githubusercontent.com/158212892/QuantumultXMark/main/My/Loon/Scripts/Bilibili_shared_membership.js, tag = ｑｘ共享会员
+http-request ^https?:\/\/((app|api)\.(\w{2,15})?\.(com|cn)).*player.*\.(v3|v2|v1).Play(URL|View|er).*$ script-path = https://raw.githubusercontent.com/158212892/QuantumultXMark/main/My/Loon/Scripts/Bilibili_shared_membership.js, tag = qx共享会员
 
 [Mitm]
 hostname=app.bilibili.com, grpc.biliapi.net,*.biliapi.net,app.bilibili.com,api.bilibili.com,api.live.bilibili.com,api.vc.bilibili.com,dataflow.biliapi.com,124.239.240.*,101.89.57.66, 218.94.210.66,240e:b1:9801:206:11:0:0:*
