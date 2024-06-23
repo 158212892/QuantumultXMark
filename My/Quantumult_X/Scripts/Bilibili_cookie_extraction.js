@@ -1,36 +1,46 @@
-// const config = {
-//   headers: {}
-// };
+/***********************************
 
-// config.headers = $request.headers;
-// var nessary_headers = {};
-// // nessary_headers.buvid = config.headers.buvid;
-// nessary_headers.Authorization = config.headers.Authorization !== undefined ? config.headers.Authorization : config.headers.authorization;
-// nessary_headers['User-Agent'] = config.headers['User-Agent'] != undefined ? config.headers['User-Agent'] : config.headers['user-agent'];
+> 应用名称：Bilibili大会员通用破解插件
+> 软件版本：8.1.0
+> 脚本作者：yaowuliu
+> 解锁说明：解锁VIP番剧和影视
+> 更新时间：2024-06-23
+> 特别说明：⚠️⚠️⚠️
+          本脚本仅供学习交流使用，禁止转载售卖
+          ⚠️⚠️⚠️
 
-// // $persistentStore.write(nessary_headers.buvid, "Bilibili_buvid");
-// $persistentStore.write(nessary_headers.Authorization, "Bilibili_Authorization");
-// $persistentStore.write(nessary_headers['User-Agent'], "Bilibili_User-Agent");
 
-// $notification.post("BiliBili Cookie获取", "获取&存储成功", JSON.stringify(nessary_headers));
-// $done({});
+[rewrite_local]
+  
+# ～ Bilibili大会员（2024-01-14）@ddgksf2013
+^https?:\/\/((app|api)\.(\w{2,15})?\.(com|cn)).*player.*\.(v3|v2|v1).Play(URL|View|er).*$ url script-request-header bilibilicarck.js
 
-const config = {
-  headers: {}
-};
 
-config.headers = $request.headers;
-var nessary_headers = {};
-nessary_headers.buvid = config.headers.buvid;
-nessary_headers.Authorization = config.headers.Authorization !== undefined ? config.headers.Authorization : config.headers.authorization;
-nessary_headers['User-Agent'] = config.headers['User-Agent'] != undefined ? config.headers['User-Agent'] : config.headers['user-agent'];
+[mitm] 
 
-$.write(nessary_headers.buvid, "Bilibili_buvid");
-$.write(nessary_headers.Authorization, "Bilibili_Authorization");
-$.write(nessary_headers['User-Agent'], "Bilibili_User-Agent");
+hostname=app.bilibili.com, grpc.biliapi.net,*.biliapi.net,app.bilibili.com,api.bilibili.com,api.live.bilibili.com,api.vc.bilibili.com,dataflow.biliapi.com,124.239.240.*,101.89.57.66, 218.94.210.66,240e:b1:9801:206:11:0:0:*
 
-$.notify("BiliBili Cookie获取", "获取&存储成功", JSON.stringify(nessary_headers));
-$.done({});
+***********************************/
+
+ 
+
+
+var modifiedHeaders = $request['headers'];
+// modifiedHeaders['Cookie'] = '';
+// modifiedHeaders['x-bili-device-bin'] = '';
+// modifiedHeaders['Authorization'] = '';
+// modifiedHeaders['User-Agent'] = '';
+// modifiedHeaders['buvid'] = '';
+// modifiedHeaders['x-bili-metadata-bin'] = '';
+// modifiedHeaders['x-bili-locale-bin'] = '';
+// modifiedHeaders['x-bili-network-bin'] = '';
+// modifiedHeaders['x-bili-fawkes-req-bin'] = '';
+// modifiedHeaders['x-bili-trace-id'] = '';
+
+modifiedHeaders['buvid'] = $.read("Bilibili_buvid");
+modifiedHeaders['authorization'] = $.read("Bilibili_Authorization");
+modifiedHeaders['user-agent'] = $.read("Bilibili_User-Agent");
+$.done({'headers': modifiedHeaders});
 
 // prettier-ignore
 var $ = new nobyda();
