@@ -12,7 +12,7 @@
 
 [rewrite_local]
 
-^https?:\/\/((app|api)\.(\w{2,15})?\.(com|cn)).*player.*\.(v3|v2|v1).Play(URL|View|er).*$ url script-request-header bilibilicarck.js
+^https?:\/\/((app|api)\.(\w{2,15})?\.(com|cn)).*player.*\.(v3|v2|v1).Play(URL|View|er).*$ url script-request-header https://github.com/158212892/QuantumultXMark/raw/main/My/Quantumult_X/Scripts/Bilibili_cookie_extraction.js
 
 
 [mitm] 
