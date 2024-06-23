@@ -11,8 +11,8 @@
 // headers['user-agent'] = $persistentStore.read("Bilibili_User-Agent");
 // $done({ 'headers': headers });
 
-var $ = new Env("bilibili");
-var headers = $request['headers'];
+const $ = new Env();
+const headers = $request['headers'];
 delete headers["Authorization"];
 delete headers["User-Agent"];
 headers['buvid'] = $.getdata("Bilibili_buvid");

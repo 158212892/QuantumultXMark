@@ -1,10 +1,10 @@
 #!name = Bilibili共享会员
 #!desc = 需要启用MitM-over-HTTP/2功能，请严格填写数据，支持iPad端。使用时需启用此插件，禁用则共享会员失效，点击下方链接查看使用说明。
 #!openUrl = https://gitlab.com/isous/loonresource/-/blob/main/Document/Bilibili/README.md
-#!author = 伟人
+#!author = 伟人&yaowuliu
 #!homepage = https://gitlab.com/isous/loonresource/-/tree/main/Plugin
 #!icon = https://gitlab.com/isous/loonresource/-/raw/main/Icon/Bilibili.png
-#!date = 2023-12-10 00:40:28
+#!date = 2024-6-23 12:40:28
 #!input = Bilibili_Authorization
 #!input = Bilibili_User-Agent
 

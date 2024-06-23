@@ -15,7 +15,7 @@
 // $notification.post("BiliBili Cookie获取", "获取&存储成功", JSON.stringify(nessary_headers));
 // $done({});
 
-var $ = new Env("bilibili");
+const $ = new Env();
 const config = {
   headers: {}
 };
@@ -29,8 +29,9 @@ nessary_headers['User-Agent'] = config.headers['User-Agent'] != undefined ? conf
 $.setdata(nessary_headers.buvid, "Bilibili_buvid");
 $.setdata(nessary_headers.Authorization, "Bilibili_Authorization");
 $.setdata(nessary_headers['User-Agent'], "Bilibili_User-Agent");
+$.setdata($.toStr($request.headers), "BilibiliHeaders");
 
-$.msg("BiliBili Cookie获取", "获取&存储成功", JSON.stringify(nessary_headers));
+$.msg("BiliBili Cookie获取", "获取&存储成功", JSON.stringify(config.headers));
 $.done({});
 
 // prettier-ignore
