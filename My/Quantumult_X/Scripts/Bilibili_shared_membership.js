@@ -24,7 +24,7 @@ hostname=app.bilibili.com, grpc.biliapi.net,*.biliapi.net,app.bilibili.com,api.b
 
 const $ = new Env();
 const headers = $request['headers'];
-const BilibiliHeaders = $.toObj($.getdata(BilibiliHeaders));
+const BilibiliHeaders = $.toObj($prefs.valueForKey(BilibiliHeaders));
 const nessaryHeadersKeys = ['Cookie', 'x-bili-device-bin', 'Authorization', 'User-Agent', 'buvid', 'x-bili-metadata-bin', 'x-bili-locale-bin', 'x-bili-network-bin', 'x-bili-fawkes-req-bin', 'x-bili-trace-id']
 // for (let key of nessaryHeadersKeys) {
 //     headers[key] = BilibiliHeaders[key] || ""
