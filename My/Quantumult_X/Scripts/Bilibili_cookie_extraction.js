@@ -26,9 +26,9 @@ const $ = new Env();
 const modifiedHeaders = $request['headers'];
 const BilibiliHeaders = $.toObj($.getdata(BilibiliHeaders));
 const nessaryHeadersKeys = ['Cookie', 'x-bili-device-bin', 'Authorization', 'User-Agent', 'buvid', 'x-bili-metadata-bin', 'x-bili-locale-bin', 'x-bili-network-bin', 'x-bili-fawkes-req-bin', 'x-bili-trace-id']
-for (let key of nessaryHeadersKeys) {
-    modifiedHeaders[key] = BilibiliHeaders[key] || ""
-}
+// for (let key of nessaryHeadersKeys) {
+//     modifiedHeaders[key] = BilibiliHeaders[key] || ""
+// }
 $.done({ 'headers': modifiedHeaders });
 
 // prettier-ignore
