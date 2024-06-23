@@ -29,6 +29,9 @@ const nessaryHeadersKeys = ['Cookie', 'x-bili-device-bin', 'Authorization', 'Use
 // for (let key of nessaryHeadersKeys) {
 //     modifiedHeaders[key] = BilibiliHeaders[key] || ""
 // }
+for (let i = 0; i <= nessaryHeadersKeys.length; i++) {
+    modifiedHeaders[nessaryHeadersKeys[i]] = BilibiliHeaders[nessaryHeadersKeys[i]] || ""
+}
 $.done({ 'headers': modifiedHeaders });
 
 // prettier-ignore
