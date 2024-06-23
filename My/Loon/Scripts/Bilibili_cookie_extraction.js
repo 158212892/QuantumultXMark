@@ -1,37 +1,18 @@
-// const config = {
-//   headers: {}
-// };
-
-// config.headers = $request.headers;
-// var nessary_headers = {};
-// // nessary_headers.buvid = config.headers.buvid;
-// nessary_headers.Authorization = config.headers.Authorization !== undefined ? config.headers.Authorization : config.headers.authorization;
-// nessary_headers['User-Agent'] = config.headers['User-Agent'] != undefined ? config.headers['User-Agent'] : config.headers['user-agent'];
-
-// // $persistentStore.write(nessary_headers.buvid, "Bilibili_buvid");
-// $persistentStore.write(nessary_headers.Authorization, "Bilibili_Authorization");
-// $persistentStore.write(nessary_headers['User-Agent'], "Bilibili_User-Agent");
-
-// $notification.post("BiliBili Cookie获取", "获取&存储成功", JSON.stringify(nessary_headers));
-// $done({});
+/*
+脚本作者：yaowuliu
+脚本日期：2024-6-23 12:15:01
+引用地址：
+*/
 
 const $ = new Env();
-const config = {
-  headers: {}
-};
+const headers = $request.headers;
+const nessaryBiliHeaders = {};
 
-config.headers = $request.headers;
-var nessary_headers = {};
-nessary_headers.buvid = config.headers.buvid;
-nessary_headers.Authorization = config.headers.Authorization !== undefined ? config.headers.Authorization : config.headers.authorization;
-nessary_headers['User-Agent'] = config.headers['User-Agent'] != undefined ? config.headers['User-Agent'] : config.headers['user-agent'];
-
-// $.setdata(nessary_headers.buvid, "Bilibili_buvid");
-$.setdata(nessary_headers.Authorization, "Bilibili_Authorization");
-$.setdata(nessary_headers['User-Agent'], "Bilibili_User-Agent");
-// $.setdata($.toStr($request.headers), "BilibiliHeaders");
-
-$.msg("BiliBili Cookie获取", "获取&存储成功", $.toStr(nessary_headers));
+// nessaryBiliHeaders.buvid = headers.buvid;
+nessaryBiliHeaders.authorization = headers.Authorization || headers.authorization;
+nessaryBiliHeaders['user-agent'] = headers['User-Agent'] || headers['user-agent'];
+$.setdata($.toStr(nessaryBiliHeaders), "nessaryBiliHeaders");
+$.msg("BiliBili Cookie获取", "获取&存储成功", $.toStr(nessaryBiliHeaders));
 $.done({});
 
 // prettier-ignore

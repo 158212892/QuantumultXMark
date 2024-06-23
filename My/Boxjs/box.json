@@ -13,23 +13,15 @@
       "icons": [
         "https://gitlab.com/isous/loonresource/-/raw/main/Icon/Bilibili.png"
       ],
-      "keys": ["Bilibili_Authorization","Bilibili_User-Agent"],
+      "keys": ["nessaryBiliHeaders"],
       "settings": [
         {
-          "id": "Bilibili_Authorization",
+          "id": "nessaryBiliHeaders",
           "name": "会员Cookie数据",
           "val": "",
           "type": "textarea",
           "autoGrow": true,
-          "desc": "会员Cookie数据"
-        },
-        {
-          "id": "Bilibili_User-Agent",
-          "name": "设备UA数据",
-          "val": "",
-          "type": "textarea",
-          "autoGrow": true,
-          "desc": "设备UA数据"
+          "desc": "大会员Cookie数据"
         }
       ]
     }
