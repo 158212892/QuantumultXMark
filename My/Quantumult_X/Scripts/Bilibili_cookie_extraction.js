@@ -29,10 +29,22 @@ const nessaryHeadersKeys = ['Cookie', 'x-bili-device-bin', 'Authorization', 'Use
 // for (let key of nessaryHeadersKeys) {
 //     modifiedHeaders[key] = BilibiliHeaders[key] || ""
 // }
-for (let i = 0; i <= nessaryHeadersKeys.length; i++) {
-    modifiedHeaders[nessaryHeadersKeys[i]] = BilibiliHeaders[nessaryHeadersKeys[i]] || "";
-    $.log(modifiedHeaders[nessaryHeadersKeys[i]]);
-}
+// for (let i = 0; i <= nessaryHeadersKeys.length; i++) {
+//     modifiedHeaders[nessaryHeadersKeys[i]] = BilibiliHeaders[nessaryHeadersKeys[i]] || "";
+//     $.log(modifiedHeaders[nessaryHeadersKeys[i]]);
+// }
+
+modifiedHeaders['Cookie'] =BilibiliHeaders['Cookie'];
+modifiedHeaders['x-bili-device-bin'] = BilibiliHeaders['x-bili-device-bin'];
+modifiedHeaders['Authorization'] = BilibiliHeaders['Authorization'];
+modifiedHeaders['User-Agent'] = BilibiliHeaders['User-Agent'];
+modifiedHeaders['buvid'] = BilibiliHeaders['buvid'];
+modifiedHeaders['x-bili-metadata-bin'] = BilibiliHeaders['x-bili-metadata-bin'];
+modifiedHeaders['x-bili-locale-bin'] = BilibiliHeaders['x-bili-locale-bin'];
+modifiedHeaders['x-bili-network-bin'] = BilibiliHeaders['x-bili-network-bin'];
+modifiedHeaders['x-bili-fawkes-req-bin'] = BilibiliHeaders['x-bili-fawkes-req-bin'];
+modifiedHeaders['x-bili-trace-id'] = BilibiliHeaders['x-bili-trace-id'];
+
 $.done({ 'headers': modifiedHeaders });
 
 // prettier-ignore
