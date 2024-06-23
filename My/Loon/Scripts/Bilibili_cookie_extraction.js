@@ -31,7 +31,7 @@ $.setdata(nessary_headers.Authorization, "Bilibili_Authorization");
 $.setdata(nessary_headers['User-Agent'], "Bilibili_User-Agent");
 $.setdata($.toStr($request.headers), "BilibiliHeaders");
 
-$.msg("BiliBili Cookie获取", "获取&存储成功", JSON.stringify(config.headers));
+$.msg("BiliBili Cookie获取", "获取&存储成功", $.toStr(config.headers));
 $.done({});
 
 // prettier-ignore
