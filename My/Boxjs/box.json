@@ -13,7 +13,7 @@
       "icons": [
         "https://gitlab.com/isous/loonresource/-/raw/main/Icon/Bilibili.png"
       ],
-      "keys": ["Bilibili_Authorization","Bilibili_User-Agent"],
+      "keys": ["Cookie", "x-bili-device-bin", "Authorization", "User-Agent", "buvid", "x-bili-metadata-bin", "x-bili-locale-bin", "x-bili-network-bin", "x-bili-fawkes-req-bin", "x-bili-trace-id"],
       "settings": [
         {
           "id": "Bilibili_Authorization",
