@@ -15,7 +15,7 @@ const $ = new Env();
 const headers = $request['headers'];
 delete headers["Authorization"];
 delete headers["User-Agent"];
-headers['buvid'] = $.getdata("Bilibili_buvid");
+// headers['buvid'] = $.getdata("Bilibili_buvid");
 headers['authorization'] = $.getdata("Bilibili_Authorization");
 headers['user-agent'] = $.getdata("Bilibili_User-Agent");
 $.done({ 'headers': headers });

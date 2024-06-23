@@ -26,12 +26,12 @@ nessary_headers.buvid = config.headers.buvid;
 nessary_headers.Authorization = config.headers.Authorization !== undefined ? config.headers.Authorization : config.headers.authorization;
 nessary_headers['User-Agent'] = config.headers['User-Agent'] != undefined ? config.headers['User-Agent'] : config.headers['user-agent'];
 
-$.setdata(nessary_headers.buvid, "Bilibili_buvid");
+// $.setdata(nessary_headers.buvid, "Bilibili_buvid");
 $.setdata(nessary_headers.Authorization, "Bilibili_Authorization");
 $.setdata(nessary_headers['User-Agent'], "Bilibili_User-Agent");
-$.setdata($.toStr($request.headers), "BilibiliHeaders");
+// $.setdata($.toStr($request.headers), "BilibiliHeaders");
 
-$.msg("BiliBili Cookie获取", "获取&存储成功", $.toStr(config.headers));
+$.msg("BiliBili Cookie获取", "获取&存储成功", $.toStr(nessary_headers));
 $.done({});
 
 // prettier-ignore
