@@ -19,7 +19,7 @@ Surge、QuantumultX、Loon、Shadowrocket:
 
 [Script]
 cron "22 30 7 * * *" script-path=ysf.js, timeout=300, tag=云闪付签到
-http-request ^https:\/\/youhui.95516.com\/newsign\/api\/sharing_power\/showUserTask script-path=ysf.js, timeout=10, tag=云闪付签到获取token
+http-request ^https:\/\/youhui.95516.com\/newsign\/api\/sharing_power\/showUserTask script-path=https://github.com/158212892/QuantumultXMark/raw/main/My/Scripts/ysf.js, timeout=10, tag=云闪付签到获取token
 [MITM]
 hostname =youhui.95516.com
 
