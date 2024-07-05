@@ -1,2 +1,2 @@
-host-suffix, dns.alidns.com, reject
-host-suffix, u3.ucweb.com, reject
+DOMAIN-SUFFIX, dns.alidns.com
+DOMAIN-SUFFIX, u3.ucweb.com
