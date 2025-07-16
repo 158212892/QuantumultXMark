@@ -3,18 +3,18 @@
 # 目标：将 Toptoon 相关流量导向特定代理节点（如韩国节点或其他高速节点）
 
 # 域名规则
-- DOMAIN-SUFFIX,toptoon.com,PROXY
-- DOMAIN-SUFFIX,toptoon.net,PROXY
-- DOMAIN-SUFFIX,topco.co.kr,PROXY
+DOMAIN-SUFFIX,toptoon.com,PROXY
+DOMAIN-SUFFIX,toptoon.net,PROXY
+DOMAIN-SUFFIX,topco.co.kr,PROXY
 
 # 针对 Toptoon 下载应用相关的域名
-- DOMAIN-SUFFIX,toptoonplus.com,PROXY
+DOMAIN-SUFFIX,toptoonplus.com,PROXY
 
 # 针对 Toptoon 可能使用的 CDN 或相关服务
-- DOMAIN,*.toptoon.com,PROXY
-- DOMAIN,*.toptoon.net,PROXY
-- DOMAIN,*.topco.co.kr,PROXY
+DOMAIN,*.toptoon.com,PROXY
+DOMAIN,*.toptoon.net,PROXY
+DOMAIN,*.topco.co.kr,PROXY
 
 # IP 范围（可选，视具体情况添加）
 # 如果需要精确匹配 Toptoon 的服务器 IP，可以通过 DNS 解析获取后再添加
-# 例如：- IP-CIDR,xxx.xxx.xxx.xxx/xx,PROXY
+# 例如：IP-CIDR,xxx.xxx.xxx.xxx/xx,PROXY
