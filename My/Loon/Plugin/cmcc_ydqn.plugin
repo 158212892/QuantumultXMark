@@ -1,6 +1,6 @@
 #!name=四川移动请你权益随时领
 #!desc=任何时间都能点「立即领取」！强制orderStatus=0 + 点击必弹出订购确认窗（支持即将开始、活动结束、已领取等全部状态）
-#!author=互联网好心人
+#!author=yaowuliu
  travaux
 #!homepage=https://github.com/mist-whisper/Loon
 #!icon=paperplane.circle.fill
@@ -13,11 +13,11 @@
 hostname = www.hsh.139sc.com
 
 [Rewrite]
-# 精确匹配你提供的那个 chunk（哈希16位）
-^https?://www\.hsh\.139sc\.com/h5mall/static/js/28\.[a-f0-9]{16}\.js$ script-response-body https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Loon/Scripts/cmcc_ydqn.js, requires-body=true, tag=注入权益JS
-
-# 兜底：所有 h5mall 的 js 文件都注入（文件名更新也不怕）
-^https?://www\.hsh\.139sc\.com/h5mall/static/js/.*\.js$ script-response-body https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Loon/Scripts/cmcc_ydqn.js, requires-body=true, tag=兜底注入
+# 下面两行仅作说明，不生效（官方模板要求这样写）
 
 [Script]
-script-response-body https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Loon/Scripts/cmcc_ydqn.js, requires-body=true, tag=四川移动请你权益随时领核心脚本
+# 精确匹配你提供的 JS 文件（哈希16位）
+http-response ^https?://www\.hsh\.139sc\.com/h5mall/static/js/28\.[a-f0-9]{16}\.js$ script-response-body https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Loon/Scripts/cmcc_ydqn.js, requires-body=true, timeout=30, tag=精准注入权益JS
+
+# 兜底规则：所有 h5mall 的 JS 文件都注入（文件名换了也不怕，永不失效）
+http-response ^https?://www\.hsh\.139sc\.com/h5mall/static/js/.*\.js$ script-response-body https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Loon/Scripts/cmcc_ydqn.js, requires-body=true, timeout=30, tag=兜底注入所有JS
