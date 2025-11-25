@@ -1,0 +1,22 @@
+#!name=四川移动请你权益随时领
+#!desc=任何时间都能点「立即领取」！强制orderStatus=0 + 点击必弹出订购确认窗（支持即将开始、活动结束、已领取等全部状态）
+#!author=yaowuliu
+#!homepage=https://github.com/mist-whisper/Loon
+#!icon=paperplane.circle.fill
+#!icon_color=#FF5A5F
+#!tag=移动权益,权益抢领,提前开抢
+#!system=iOS,iPadOS
+#!loon_version=3.2.以上均可
+
+[MITM]
+hostname = www.hsh.139sc.com
+
+[Rewrite]
+# 下面两行仅作说明，不生效（官方模板要求这样写）
+
+[Script]
+# 精确匹配（哈希16位）
+http-response ^https?://www\.hsh\.139sc\.com/h5mall/static/js/28\.[a-f0-9]{16}\.js$ script-path=https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Loon/Scripts/cmcc_ydqn_v2.js, requires-body=true, timeout=30, tag=精准注入权益JS
+
+# 兜底规则（所有 h5mall 的 js 文件都注入，文件名永远不会失效）
+http-response ^https?://www\.hsh\.139sc\.com/h5mall/static/js/.*\.js$ script-path=https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Loon/Scripts/cmcc_ydqn_v2.js, requires-body=true, timeout=30, tag=兜底注入所有JS
