@@ -1,0 +1,13 @@
+# 文件名：四川移动-无忧行权益随时领.conf
+# 放置路径：iCloud Drive/Loon/Plugin/ 或者 本地文件 App → Loon → Plugin
+
+[Plugin]
+Name = 四川移动-无忧行权益随时领
+Icon = paperplane.circle.fill
+Description = 强制 orderStatus=0 + 点击必弹出订购窗（hsh.139sc.com 专用）
+
+# 精确匹配你提供的那个 JS 文件（文件名哈希会变，所以用了通配）
+http-response ^https?://www\.hsh\.139sc\.com/h5mall/static/js/28\.[a-f0-9]+\.js$ script-response-body https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Loon/Scripts/cmcc_ydqn.js
+
+# 如果上面那个 chunk 换名字了，下面的兜底规则也能命中（推荐都开）
+http-response ^https?://www\.hsh\.139sc\.com/h5mall/static/js/.*\.js$ script-response-body 四川移动-无忧行权益随时领.js
