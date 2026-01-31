@@ -12,3 +12,4 @@ mitm:
   hostnames:
     includes:
       - pluginhub.kelee.one
+      - hub.kelee.one
