@@ -1,0 +1,72 @@
+name: "WeTalk Auto CheckIn"
+description: "WeTalk daily check-in + video bonus, multi-account support."
+author: "TG@ZenMoFiShi (Egern port)"
+icon: "checkmark.seal.fill"
+
+env_schema:
+  CAPTURE_ENABLED:
+    name: "账号抓取 - 启用"
+    description: "关闭后抓包脚本不再处理任何请求"
+    options:
+      - "true"
+      - "false"
+    default_value: "true"
+
+  TASK_ENABLED:
+    name: "签到任务 - 总开关"
+    description: "关闭后定时任务不执行任何操作"
+    options:
+      - "true"
+      - "false"
+    default_value: "true"
+
+  ENABLE_CHECKIN:
+    name: "签到任务 - 执行签到"
+    description: "是否执行每日签到"
+    options:
+      - "true"
+      - "false"
+    default_value: "true"
+
+  ENABLE_VIDEO:
+    name: "签到任务 - 执行视频奖励"
+    description: "是否领取视频奖励金币"
+    options:
+      - "true"
+      - "false"
+    default_value: "true"
+
+  MAX_VIDEO:
+    name: "签到任务 - 最大视频次数"
+    description: "每账号每次最多领取视频奖励次数 (1-10)"
+    default_value: "5"
+
+  VIDEO_DELAY_MS:
+    name: "签到任务 - 视频间隔(ms)"
+    description: "两次视频请求之间的等待毫秒数,建议不低于 6000"
+    default_value: "8000"
+
+  ACCOUNT_GAP_MS:
+    name: "签到任务 - 账号切换间隔(ms)"
+    description: "多账号依次执行时,账号之间的等待毫秒数"
+    default_value: "3500"
+
+mitm:
+  hostnames:
+    - "api.wetalkapp.com"
+
+http_captures:
+  - "api.wetalkapp.com"
+
+scriptings:
+  - http_request:
+      name: "WeTalk 账号抓取"
+      match: "^https://api\\.wetalkapp\\.com/app/queryBalanceAndBonus"
+      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/WeTalk_capture.js"
+      timeout: 10
+
+  - schedule:
+      name: "WeTalk 签到任务"
+      cron: "20 8,20 * * *"
+      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/WeTalk_task.js"
+      timeout: 120
