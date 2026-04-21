@@ -1,16 +1,8 @@
 /**
- * WeTalk_task.js - Egern schedule script
- * Runs check-in and video bonus for all stored accounts.
- * * env (all configurable via module settings UI):
- * TASK_ENABLED      "true"/"false" master switch
- * ENABLE_CHECKIN    "true"/"false" run check-in
- * ENABLE_VIDEO      "true"/"false" run video bonus
- * MAX_VIDEO         number         max video rounds per account (default 5)
- * VIDEO_DELAY_MS    number         delay between videos in ms (default 8000)
- * ACCOUNT_GAP_MS    number         delay between accounts in ms (default 3500)
+ * WeTalk_task.js - Egern 定时脚本
+ * 查看日志：Egern -> 日志 -> 脚本 (查看任务执行流水)
  */
 
-// ── MD5 ──────────────────────────────────────────────────────────────────────
 function MD5(s) {
     function RL(v, n) { return (v << n) | (v >>> (32 - n)); }
     function AU(x, y) {
@@ -62,39 +54,22 @@ function MD5(s) {
     return (W2H(a) + W2H(b) + W2H(c) + W2H(d)).toLowerCase();
 }
 
-// ── constants ────────────────────────────────────────────────────────────────
 var SECRET = '0fOiukQq7jXZV2GRi9LGlO';
 var API_HOST = 'api.wetalkapp.com';
 var STORE_KEY = 'wetalk_accounts_v1';
+var IOS_VER = ['17.5.1', '17.6.1', '17.4.1', '18.0.1'];
+var MODELS = ['iPhone14,3', 'iPhone15,3', 'iPhone16,1'];
 
-var IOS_VER = ['17.5.1', '17.6.1', '17.4.1', '17.2.1', '16.7.8', '17.6', '17.3.1', '18.0.1', '17.1.2', '16.6.1'];
-var IOS_SC = ['2.00', '3.00', '3.00', '2.00', '3.00'];
-var MODELS = ['iPhone14,3', 'iPhone13,3', 'iPhone15,3', 'iPhone16,1', 'iPhone14,7', 'iPhone13,2', 'iPhone15,2', 'iPhone12,1'];
-var CFN = ['1410.0.3', '1494.0.7', '1568.100.1', '1209.1', '1474.0.4', '1568.200.2'];
-var DARWIN = ['22.6.0', '23.5.0', '23.6.0', '24.0.0', '22.4.0'];
-
-// ── helpers ──────────────────────────────────────────────────────────────────
 function pick(arr, seed) { return arr[seed % arr.length]; }
-
 function buildUA(base, seed) {
-    var iv = pick(IOS_VER, seed), sc = pick(IOS_SC, seed + 1), mo = pick(MODELS, seed + 2),
-        cf = pick(CFN, seed + 3), dw = pick(DARWIN, seed + 4);
+    var iv = pick(IOS_VER, seed), mo = pick(MODELS, seed + 2);
     if (base && typeof base === 'string') {
-        var ua = base, ok = false;
-        if (/iOS \d+(\.\d+){0,2}/.test(ua)) { ua = ua.replace(/iOS \d+(\.\d+){0,2}/, 'iOS ' + iv); ok = true; }
-        if (/Scale\/\d+(\.\d+)?/.test(ua)) { ua = ua.replace(/Scale\/\d+(\.\d+)?/, 'Scale/' + sc); ok = true; }
-        if (/iPhone\d+,\d+/.test(ua)) { ua = ua.replace(/iPhone\d+,\d+/, mo); ok = true; }
-        if (/CFNetwork\/[\d.]+/.test(ua)) { ua = ua.replace(/CFNetwork\/[\d.]+/, 'CFNetwork/' + cf); ok = true; }
-        if (/Darwin\/[\d.]+/.test(ua)) { ua = ua.replace(/Darwin\/[\d.]+/, 'Darwin/' + dw); ok = true; }
-        if (ok) return ua;
+        var ua = base;
+        ua = ua.replace(/iOS \d+(\.\d+){0,2}/, 'iOS ' + iv);
+        ua = ua.replace(/iPhone\d+,\d+/, mo);
+        return ua;
     }
     return 'WeTalk/30.6.0 (com.innovationworks.wetalk; build:28; iOS ' + iv + ') Alamofire/5.4.3';
-}
-
-function utcDate() {
-    var n = new Date(), pad = function (x) { return String(x).padStart(2, '0'); };
-    return n.getUTCFullYear() + '-' + pad(n.getUTCMonth() + 1) + '-' + pad(n.getUTCDate()) +
-        ' ' + pad(n.getUTCHours()) + ':' + pad(n.getUTCMinutes()) + ':' + pad(n.getUTCSeconds());
 }
 
 function signedParams(capture) {
@@ -102,131 +77,81 @@ function signedParams(capture) {
     Object.keys(capture.paramsRaw || {}).forEach(function (k) {
         if (k !== 'sign' && k !== 'signDate') p[k] = capture.paramsRaw[k];
     });
-    p.signDate = utcDate();
+    var n = new Date();
+    var pad = function (x) { return String(x).padStart(2, '0'); };
+    p.signDate = n.getUTCFullYear() + '-' + pad(n.getUTCMonth() + 1) + '-' + pad(n.getUTCDate()) + ' ' + pad(n.getUTCHours()) + ':' + pad(n.getUTCMinutes()) + ':' + pad(n.getUTCSeconds());
     var base = Object.keys(p).sort().map(function (k) { return k + '=' + p[k]; }).join('&');
     p.sign = MD5(base + SECRET);
     return p;
 }
 
-function buildUrl(path, capture) {
-    var p = signedParams(capture);
-    var qs = Object.keys(p).map(function (k) { return k + '=' + encodeURIComponent(p[k]); }).join('&');
-    return 'https://' + API_HOST + '/app/' + path + '?' + qs;
-}
-
-function buildHeaders(capture, ua) {
-    var out = {};
-    var snap = capture.headers || {};
-    Object.keys(snap).forEach(function (k) { out[k] = snap[k]; });
-    ['content-length', 'Content-Length', ':authority', ':method', ':path', ':scheme'].forEach(function (k) { delete out[k]; });
-    out['Host'] = API_HOST;
-    out['Accept'] = out['Accept'] || out['accept'] || 'application/json';
-    Object.keys(out).forEach(function (k) { if (k.toLowerCase() === 'user-agent') delete out[k]; });
-    out['User-Agent'] = ua;
-    return out;
-}
-
-function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
-
-// ── single account ───────────────────────────────────────────────────────────
 async function runAccount(ctx, acc, idx, total, opts) {
-    var label = '[' + (idx + 1) + '/' + total + ' ' + (acc.alias || acc.id) + ']';
+    var label = '[' + (idx + 1) + '/' + total + ' ' + acc.alias + ']';
+    console.log(label + " 开始处理...");
     var ua = buildUA(acc.baseUA, acc.uaSeed);
-    var headers = buildHeaders(acc.capture, ua);
-    var lines = [label];
+    var headers = acc.capture.headers || {};
+    headers['User-Agent'] = ua;
+    headers['Host'] = API_HOST;
 
     async function api(path) {
-        var resp = await ctx.http.get(buildUrl(path, acc.capture), { headers: headers });
+        var p = signedParams(acc.capture);
+        var qs = Object.keys(p).map(function (k) { return k + '=' + encodeURIComponent(p[k]); }).join('&');
+        var url = 'https://' + API_HOST + '/app/' + path + '?' + qs;
+        var resp = await ctx.http.get(url, { headers: headers });
         return resp.json();
     }
 
-    // balance before
+    var logArr = [label];
     try {
-        var d = await api('queryBalanceAndBonus');
-        lines.push(d.retcode === 0 ? ('[Balance] ' + d.result.balance + ' Coins') : ('[Query failed] ' + d.retmsg));
-    } catch (e) { lines.push('[Query error] ' + (e.message || 'req failed')); }
-
-    // check-in
-    if (opts.enableCheckin) {
-        try {
+        if (opts.enableCheckin) {
             var d = await api('checkIn');
-            if (d.retcode === 0) {
-                lines.push('[CheckIn OK] ' + ((d.result && d.result.bonusHint) || d.retmsg || '').replace(/\n/g, ' '));
-            } else {
-                lines.push('[CheckIn] ' + d.retmsg);
-            }
-        } catch (e) { lines.push('[CheckIn error] ' + (e.message || 'req failed')); }
-    }
-
-    // video bonus
-    if (opts.enableVideo) {
-        for (var i = 1; i <= opts.maxVideo; i++) {
-            await sleep(i === 1 ? 1500 : opts.videoDelay);
-            try {
+            var m = "[签到] " + (d.retcode === 0 ? "成功" : d.retmsg);
+            console.log(label + " " + m);
+            logArr.push(m);
+        }
+        if (opts.enableVideo) {
+            for (var i = 1; i <= opts.maxVideo; i++) {
+                await new Promise(r => setTimeout(r, i === 1 ? 1000 : opts.videoDelay));
                 var d = await api('videoBonus');
-                if (d.retcode === 0) {
-                    lines.push('[Video ' + i + '] +' + ((d.result && d.result.bonus) || '?') + ' Coins');
-                } else {
-                    lines.push('[Video ' + i + ' stop] ' + d.retmsg);
-                    break;
-                }
-            } catch (e) {
-                lines.push('[Video ' + i + ' error] ' + (e.message || 'req failed'));
-                break;
+                var m = "[视频" + i + "] " + (d.retcode === 0 ? "+" + d.result.bonus : d.retmsg);
+                console.log(label + " " + m);
+                logArr.push(m);
+                if (d.retcode !== 0) break;
             }
         }
+    } catch (e) {
+        console.log(label + " 出错: " + e.message);
+        logArr.push("[错误] " + e.message);
     }
-
-    // balance after
-    try {
-        var d = await api('queryBalanceAndBonus');
-        if (d.retcode === 0) lines.push('[New Balance] ' + d.result.balance + ' Coins');
-    } catch (e) { }
-
-    return lines.join('\n');
+    return logArr.join('\n');
 }
 
-// ── main ─────────────────────────────────────────────────────────────────────
 export default async function (ctx) {
-    // master switch
-    if ((ctx.env.TASK_ENABLED || 'true') === 'false') {
+    console.log("[WeTalk Task] 任务启动...");
+    if ((ctx.env.TASK_ENABLED || 'true') === 'false') return;
+
+    var store = ctx.storage.getJSON(STORE_KEY);
+    if (!store || !store.order.length) {
+        console.log("[WeTalk Task] 未发现已存储的账号");
+        ctx.notify({ title: 'WeTalk', body: '无可用账号' });
         return;
     }
 
     var opts = {
         enableCheckin: (ctx.env.ENABLE_CHECKIN || 'true') !== 'false',
         enableVideo: (ctx.env.ENABLE_VIDEO || 'true') !== 'false',
-        maxVideo: parseInt(ctx.env.MAX_VIDEO || '5', 10) || 5,
-        videoDelay: parseInt(ctx.env.VIDEO_DELAY_MS || '8000', 10) || 8000,
-        accountGap: parseInt(ctx.env.ACCOUNT_GAP_MS || '3500', 10) || 3500
+        maxVideo: parseInt(ctx.env.MAX_VIDEO || '5'),
+        videoDelay: parseInt(ctx.env.VIDEO_DELAY_MS || '8000'),
+        accountGap: parseInt(ctx.env.ACCOUNT_GAP_MS || '3500')
     };
 
-    var store = ctx.storage.getJSON(STORE_KEY);
-    if (!store || !store.accounts || !store.order || !store.order.length) {
-        ctx.notify({
-            title: 'WeTalk - No accounts',
-            body: 'Open WeTalk app first to capture account params.'
-        });
-        return;
-    }
-
-    var ids = store.order.filter(function (id) { return !!store.accounts[id]; });
-    var total = ids.length;
     var results = [];
-
-    for (var i = 0; i < ids.length; i++) {
-        var acc = store.accounts[ids[i]];
-        try {
-            var text = await runAccount(ctx, acc, i, total, opts);
-            results.push(text);
-        } catch (e) {
-            results.push('[' + (i + 1) + '/' + total + ' ' + (acc.alias || acc.id) + ']\n[Error] ' + (e.message || String(e)));
-        }
-        if (i < ids.length - 1) await sleep(opts.accountGap);
+    for (var i = 0; i < store.order.length; i++) {
+        var res = await runAccount(ctx, store.accounts[store.order[i]], i, store.order.length, opts);
+        results.push(res);
+        if (i < store.order.length - 1) await new Promise(r => setTimeout(r, opts.accountGap));
     }
 
-    ctx.notify({
-        title: 'WeTalk - Done (' + total + ' accounts)',
-        body: results.join('\n---\n')
-    });
+    console.log("[WeTalk Task] 任务完成。");
+    ctx.notify({ title: 'WeTalk 任务完成', body: results.join('\n---\n') });
 }
