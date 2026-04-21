@@ -1,11 +1,12 @@
-﻿// ==UserScript==
+// ==UserScript==
     // @name         天翼云盘秒传助手
     // @namespace    http://tampermonkey.net/
-    // @version      1.4.0
+    // @version      1.4.2
     // @description  天翼云盘秒传助手 - 支持秒传上传、扫描CAS转存、家庭接口上传、设置页与详细日志
     // @author       liyk
     // @match        https://cloud.189.cn/*
     // @match        https://m.cloud.189.cn/*
+    // @match        https://h5.cloud.189.cn/*
     // @grant        GM_xmlhttpRequest
     // @grant        GM_setValue
     // @grant        GM_getValue
@@ -21,6 +22,7 @@
     // @connect      cloudcube.telecomjs.com
     // @connect      cloudcube.wuxi.cn
     // @connect      mini189.cn
+    // @connect      h5.cloud.189.cn
     // @connect      *
     // @run-at       document-end
     // ==/UserScript==
@@ -432,32 +434,55 @@
 
             getSessionKey() {
                 if (window.__sessionKey) { this.sessionKey = window.__sessionKey; return this.sessionKey; }
-                try {
-                    const sk = sessionStorage.getItem('sessionKey');
-                    if (sk) { this.sessionKey = sk; return sk; }
-                    for (let i = 0; i < sessionStorage.length; i++) {
-                        const key = sessionStorage.key(i);
-                        if (key && key.toLowerCase().includes('sessionkey')) { const v = sessionStorage.getItem(key); if (v) { this.sessionKey = v; return v; } }
-                    }
-                } catch (e) {}
-                try {
-                    const at = localStorage.getItem('accessToken');
-                    if (at) this.accessToken = at;
-                    for (let i = 0; i < localStorage.length; i++) {
-                        const key = localStorage.key(i);
-                        const value = localStorage.getItem(key);
-                        if (key && key.toLowerCase().includes('accesstoken') && value) this.accessToken = value;
-                        if (value && value.includes('sessionKey')) {
-                            try { const d = JSON.parse(value); if (d.sessionKey) { this.sessionKey = d.sessionKey; return d.sessionKey; } } catch (e) {}
+                const checkStorage = (storage) => {
+                if (!storage) return null;
+
+                const priorities = ['h5_access_token', 'sessionKey', 'SESSIONKEY', 'id_token', 'accessToken'];
+                for (const k of priorities) {
+                    const val = storage.getItem(k);
+                    if (val && val.length > 10) return val;
+                }
+
+                for (let i = 0; i < storage.length; i++) {
+                    const key = storage.key(i);
+                    if (!key) continue;
+                    const kl = key.toLowerCase();
+                    if (kl.includes('sessionkey') || kl.includes('token') || kl.includes('h5_access')) {
+                        const v = storage.getItem(key);
+                        if (v && v.length > 10) {
+                             if (v.includes('{')) {
+                                 try { 
+                                    const d = JSON.parse(v); 
+                                    const token = d.h5_access_token || d.accessToken || d.sessionKey || d.id_token;
+                                    if (token) return token;
+                                 } catch(e){}
+                             }
+                             return v;
                         }
                     }
-                } catch (e) {}
+                }
+                return null;
+            };
+
+                const sk = checkStorage(sessionStorage) || checkStorage(localStorage);
+                if (sk) { 
+                    const cleanSk = typeof sk === 'string' ? sk.replace(/[\r\n]/g, '').trim() : sk;
+                    this.sessionKey = cleanSk;
+                    return cleanSk;
+                 }
+
+                // Cookie scan
                 const cookies = document.cookie.split(';').map(c => c.trim());
                 for (const cookie of cookies) {
-                    for (const name of ['SESSION_KEY', 'sessionKey', 'SESSIONKEY', 'SSON']) {
-                        if (cookie.startsWith(name + '=')) { this.sessionKey = cookie.substring(name.length + 1); return this.sessionKey; }
+                    const names = ['SESSION_KEY', 'sessionKey', 'SESSIONKEY', 'SSON', 'accessToken'];
+                    for (const name of names) {
+                         if (cookie.startsWith(name + '=')) { 
+                             const v = cookie.substring(name.length + 1); 
+                             if (v && v.length > 5) { this.sessionKey = v; return v; }
                     }
                 }
+            }
+
                 const scripts = document.querySelectorAll('script');
                 for (const script of scripts) {
                     const content = script.textContent || script.innerHTML;
@@ -468,11 +493,6 @@
                         }
                     }
                 }
-                try {
-                    const urlSk = new URLSearchParams(window.location.search).get('sessionKey');
-                    if (urlSk) { this.sessionKey = urlSk; return urlSk; }
-                } catch (e) {}
-                try { if (window.top && window.top !== window && window.top.__sessionKey) { this.sessionKey = window.top.__sessionKey; return this.sessionKey; } } catch (e) {}
                 return null;
             }
 
@@ -495,6 +515,11 @@
                 if (match) { this.parentFolderId = match[1]; return match[1]; }
                 match = window.location.hash.match(/folder[\/=]([^&\/]+)/);
                 if (match) { this.parentFolderId = match[1]; return match[1]; }
+                match = window.location.hash.match(/\/cloud\/file\/([^\/\?]+)/);
+                if (match) { 
+                     this.parentFolderId = match[1]; 
+                    return match[1]; 
+                    }
                 const fp = new URLSearchParams(window.location.search);
                 const fid = fp.get('folderId') || fp.get('currentFolderId');
                 if (fid) { this.parentFolderId = fid; return fid; }
@@ -502,7 +527,8 @@
             }
 
             isFamilySpace() {
-                return String(window.location.pathname || '').includes('/web/family');
+                 const path = String(window.location.pathname || '');
+                 return path.includes('/web/family') || path.includes('/family');
             }
 
             shouldUseFamilyUpload(forceFamilyUpload = false) {
@@ -510,22 +536,9 @@
             }
 
             getAccessToken() {
-                if (this.accessToken) return this.accessToken;
-                try {
-                    const token = localStorage.getItem('accessToken');
-                    if (token) {
-                        this.accessToken = token;
-                        return token;
-                    }
-                    for (let i = 0; i < localStorage.length; i++) {
-                        const key = localStorage.key(i);
-                        const value = localStorage.getItem(key);
-                        if (key && key.toLowerCase().includes('accesstoken') && value) {
-                            this.accessToken = value;
-                            return value;
-                        }
-                    }
-                } catch (e) {}
+                 if (this.accessToken) return this.accessToken;
+                 const sk = this.getSessionKey();
+                 if (sk) { this.accessToken = sk; return sk; }
                 return null;
             }
 
@@ -774,15 +787,37 @@
             async checkLogin() { return true; }
 
             async fetchSessionKey() {
-                try {
-                    const sk = sessionStorage.getItem('sessionKey');
-                    if (sk) { this.sessionKey = sk; return sk; }
-                    const resp = await fetch(`${WEB_URL}/api/portal/getUserSizeInfo.action`, { method: 'GET', credentials: 'include' });
-                    const skh = resp.headers.get('SessionKey') || resp.headers.get('sessionkey');
-                    if (skh) { this.sessionKey = skh; return skh; }
-                    return null;
-                } catch (e) { return null; }
-            }
+            try {
+                const sk = this.getSessionKey();
+                if (sk) { this.sessionKey = sk; return sk; }
+
+                // GM_xmlhttpRequest get sessionKey
+                const response = await new Promise((resolve) => {
+                    GM_xmlhttpRequest({
+                        method: 'GET',
+                        url: `${WEB_URL}/api/portal/getUserSizeInfo.action`,
+                        headers: { 'Accept': 'application/json', 'User-Agent': UserAgent },
+                        onload: r => resolve(r),
+                        onerror: () => resolve(null)
+                    });
+                });
+
+                if (!response) return null;
+                
+                const skh = response.responseHeaders.match(/sessionkey:\s*([^\r\n]+)/i)?.[1] || 
+                            response.responseHeaders.match(/SessionKey:\s*([^\r\n]+)/i)?.[1];
+                
+                if (skh) { this.sessionKey = skh; return skh; }
+
+                const setCookie = response.responseHeaders.match(/set-cookie:\s*([^\r\n]+)/i)?.[1];
+                if (setCookie && setCookie.includes('sessionKey=')) {
+                    const match = setCookie.match(/sessionKey=([^;]+)/);
+                    if (match) { this.sessionKey = match[1]; return match[1]; }
+                }
+
+                return null;
+            } catch (e) { return null; }
+        }
 
             parseXmlResponse(xmlString) {
                 const result = {};
@@ -831,15 +866,16 @@
 
             async buildUploadRequest(params, requestUri, method = 'GET') {
                 const rsaKey = await this.generateRsaKey();
-                const sk = this.getSessionKey();
+                const sk = this.getSessionKey() || await this.fetchSessionKey() || '';
+                const safeSk = typeof sk === 'string' ? sk.replace(/[\r\n]/g, '').trim() : '';
                 const uuid = Utils.randomString(16);
                 const ts = Utils.timestamp().toString();
                 const encryptedParams = await AES.encrypt(params, uuid);
                 const encryptionText = await RSA.encryptBase64(rsaKey.pubKey, uuid);
-                const signature = await HMAC.sha1({ SessionKey: sk, Operate: method, RequestURI: requestUri, Date: ts, params: encryptedParams }, uuid);
+                const signature = await HMAC.sha1({ SessionKey: safeSk, Operate: method, RequestURI: requestUri, Date: ts, params: encryptedParams }, uuid);
                 return {
                     url: `${UPLOAD_URL}${requestUri}?params=${encryptedParams}`,
-                    headers: { 'X-Request-Date': ts, 'X-Request-ID': Utils.randomUUID(), 'SessionKey': sk, 'EncryptionText': encryptionText, 'PkId': rsaKey.pkId, 'Signature': signature, 'User-Agent': UserAgent }
+                    headers: { 'X-Request-Date': ts, 'X-Request-ID': Utils.randomUUID(), 'SessionKey': safeSk, 'EncryptionText': encryptionText, 'PkId': rsaKey.pkId, 'Signature': signature, 'User-Agent': UserAgent }
                 };
             }
 
@@ -1094,11 +1130,15 @@
                     if (familyId) {
                         return await this.familyFetchJson(`${API_URL}/open/family/file/listFiles.action?pageSize=60&pageNum=${pageNum}&mediaType=0&familyId=${encodeURIComponent(familyId)}&folderId=${encodeURIComponent(effectiveFolderId || '')}&iconOption=5&orderBy=3&descending=true`);
                     }
+
+                    const rawSk = this.getSessionKey() || '';
+                    const safeSk = typeof rawSk === 'string' ? rawSk.replace(/[\r\n]/g, '').trim() : '';
+
                     const responseText = await new Promise((resolve, reject) => {
                         GM_xmlhttpRequest({
                             method: 'GET',
                             url: `${WEB_URL}/api/open/file/listFiles.action?folderId=${effectiveFolderId}&mediaType=0&orderBy=lastOpTime&descending=true&pageNum=${pageNum}&pageSize=60`,
-                            headers: { 'Accept': 'application/json;charset=UTF-8', 'Sign-Type': '1', 'User-Agent': UserAgent },
+                            headers: { 'Accept': 'application/json;charset=UTF-8', 'Sign-Type': '1', 'User-Agent': UserAgent, 'SessionKey': safeSk, 'Referer': window.location.origin + '/' },
                             onload: r => resolve(r.responseText),
                             onerror: e => reject(new Error('获取文件列表失败'))
                         });
@@ -1343,6 +1383,91 @@
                     .cloud189-rapid-float-btn:hover { transform:scale(1.1);box-shadow:0 6px 16px rgba(102,126,234,.5); }
                     .cloud189-rapid-toast { position:fixed;top:20px;right:20px;background:#323232;color:#fff;padding:12px 20px;border-radius:6px;z-index:9999999;animation:slideIn .3s ease; }
                     @keyframes slideIn { from { transform:translateX(100%);opacity:0; } to { transform:translateX(0);opacity:1; } }
+
+                    // ============== UI for H5 ==============
+                    @media (max-width: 767px) {
+                    .cloud189-rapid-panel {
+                        width: 92vw !important;
+                        max-width: 450px !important;
+                        left: 50% !important;
+                        top: 50% !important;
+                        transform: translate(-50%, -50%) !important;
+                        border-radius: 12px !important;
+                        box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+                        overflow: hidden !important;
+                    }
+                    .cloud189-rapid-panel-header {
+                        padding: 15px !important;
+                        border-bottom: 1px solid #eee !important;
+                    }
+                    .cloud189-rapid-panel-title {
+                        font-size: 16px !important;
+                    }
+                    .cloud189-rapid-panel-body {
+                        padding: 15px !important;
+                    }
+                    .cloud189-rapid-tab-container {
+                        display: flex !important;
+                        overflow-x: auto !important;
+                        -webkit-overflow-scrolling: touch !important;
+                    }
+                    .cloud189-rapid-tab {
+                        padding: 10px 5px !important;
+                        font-size: 13px !important;
+                        flex: 1 !important;
+                        text-align: center !important;
+                        white-space: nowrap !important;
+                    }
+                    .cloud189-rapid-tab:active {
+                        background-color: rgba(0, 0, 0, 0.05) !important;
+                    }
+                    .cloud189-rapid-info {
+                        font-size: 12px !important;
+                        padding: 10px !important;
+                    }
+                    .cloud189-rapid-btn {
+                        height: 44px !important;
+                        line-height: 44px !important;
+                        padding: 0 15px !important;
+                        font-size: 14px !important;
+                        border-radius: 8px !important;
+                    }
+                    .cloud189-rapid-btn:active {
+                        opacity: 0.8 !important;
+                    }
+                    .cloud189-rapid-float-btn {
+                        width: 52px !important;
+                        height: 52px !important;
+                        bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+                        right: 20px !important;
+                        font-size: 22px !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        border-radius: 50% !important;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+                    }
+                    .cloud189-rapid-textarea {
+                        width: 100% !important;
+                        min-height: 100px !important;
+                        font-size: 14px !important;
+                        box-sizing: border-box !important;
+                        -webkit-appearance: none !important;
+                    }
+                    #detail-log-box {
+                        min-height: 120px !important;
+                        max-height: 40vh !important;
+                        font-size: 12px !important;
+                    }
+                    .cloud189-rapid-toast {
+                        width: auto !important;
+                        max-width: 80% !important;
+                        left: 50% !important;
+                        bottom: 20% !important;
+                        transform: translateX(-50%) !important;
+                        text-align: center !important;
+                    }
+                }
                 `);
             },
 
@@ -1372,7 +1497,7 @@
                     const forceFamilyUpload = GM_getValue(STORAGE_KEYS.forceFamilyUpload, false);
                     panel.innerHTML = `
                     <div class="cloud189-rapid-panel-header">
-                        <span class="cloud189-rapid-panel-title">🚀 天翼云盘秒传助手 v1.4.0</span>
+                        <span class="cloud189-rapid-panel-title">🚀 天翼云盘秒传助手 v1.4.2</span>
                         <button class="cloud189-rapid-panel-close">×</button>
                     </div>
                     <div class="cloud189-rapid-panel-body">
@@ -1858,7 +1983,7 @@
         }
 
         function init() {
-            console.log('[天翼云盘秒传助手] v1.4.0 已加载');
+            console.log('[天翼云盘秒传助手] v1.4.2 已加载');
             installFamilyRequestHook();
             UI.addStyles();
             setTimeout(() => UI.createFloatButton(), 1000);
