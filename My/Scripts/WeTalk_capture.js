@@ -1,11 +1,8 @@
 /**
  * WeTalk_capture.js - Egern http_request script
- * Intercepts queryBalanceAndBonus and stores account params.
- * * env:
- * CAPTURE_ENABLED "true"/"false" toggle this script on/off
+ * 日志查看方法：Egern -> 日志 -> 脚本 (查看数据抓取情况)
  */
 
-// ── MD5 ──────────────────────────────────────────────────────────────────────
 function MD5(s) {
     function RL(v, n) { return (v << n) | (v >>> (32 - n)); }
     function AU(x, y) {
@@ -57,7 +54,6 @@ function MD5(s) {
     return (W2H(a) + W2H(b) + W2H(c) + W2H(d)).toLowerCase();
 }
 
-// ── helpers ──────────────────────────────────────────────────────────────────
 var STORE_KEY = 'wetalk_accounts_v1';
 
 function parseQuery(url) {
@@ -86,24 +82,19 @@ function loadStore(ctx) {
     return obj;
 }
 
-// ── main ─────────────────────────────────────────────────────────────────────
 export default async function (ctx) {
-    // env switch: CAPTURE_ENABLED (default true)
+    console.log("[WeTalk Capture] 正在拦截请求...");
     if ((ctx.env.CAPTURE_ENABLED || 'true') === 'false') {
-        return; // pass-through silently
+        console.log("[WeTalk Capture] 脚本已通过环境变量禁用");
+        return;
     }
 
     var url = ctx.request.url;
     var hdrs = ctx.request.headers;
     var baseUA = hdrs.get('user-agent') || hdrs.get('User-Agent') || '';
 
-    // snapshot known headers as plain object
     var snap = {};
-    var known = [
-        'user-agent', 'accept', 'accept-language', 'accept-encoding',
-        'authorization', 'content-type', 'x-app-version', 'x-platform',
-        'x-device-id', 'connection', 'host'
-    ];
+    var known = ['user-agent', 'accept', 'accept-language', 'accept-encoding', 'authorization', 'content-type', 'x-app-version', 'x-platform', 'x-device-id', 'connection', 'host'];
     known.forEach(function (h) {
         var v = hdrs.get(h);
         if (v) snap[h] = v;
@@ -118,10 +109,7 @@ export default async function (ctx) {
     var alias = existed ? store.accounts[fp].alias : ('账号' + (store.order.length + 1));
 
     store.accounts[fp] = {
-        id: fp,
-        alias: alias,
-        uaSeed: uaSeed,
-        baseUA: baseUA,
+        id: fp, alias: alias, uaSeed: uaSeed, baseUA: baseUA,
         capture: { url: url, paramsRaw: params, headers: snap },
         createdAt: existed ? store.accounts[fp].createdAt : now,
         updatedAt: now
@@ -129,9 +117,7 @@ export default async function (ctx) {
     if (!existed) store.order.push(fp);
     ctx.storage.setJSON(STORE_KEY, store);
 
-    var total = store.order.length;
-    ctx.notify({
-        title: 'WeTalk ' + (existed ? '帐号参数已更新' : '新帐号已入库'),
-        body: alias + ' (id:' + fp + ')  total:' + total
-    });
+    var msg = (existed ? '更新' : '新增') + '账号: ' + alias + ' (ID: ' + fp + ')';
+    console.log("[WeTalk Capture] " + msg);
+    ctx.notify({ title: 'WeTalk 参数捕获', body: msg });
 }
