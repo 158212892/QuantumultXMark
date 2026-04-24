@@ -1,0 +1,18 @@
+name: PingMe Auto CheckIn
+description: PingMe daily check-in + video bonus, multi-account support
+dns: {}
+scriptings:
+- http_request:
+    name: PingMe账号抓取
+    match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
+    script_url: https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Scripts/PingMe_capture.js
+    timeout: 60
+- schedule:
+    name: PingMe签到
+    cron: 30 */8 * * *
+    script_url: https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Scripts/PingMe_task.js
+    timeout: 120
+mitm:
+  hostnames:
+    includes:
+    - api.pingmeapp.net
