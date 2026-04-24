@@ -4,6 +4,7 @@
 @modify 做了多账号修改，理论支持 Qx,Loon,Surge,Egern,ShadowRocket,青龙
 @date 2026-04-24 18:00:00
 
+*/
 
 const $ = new Env('PingMe签到');
 const isNode = $.isNode();
