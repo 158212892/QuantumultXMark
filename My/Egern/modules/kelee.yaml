@@ -1,6 +1,7 @@
 name: 可莉资源浏览器访问
 description: 支持可莉资源浏览器的访问，绕过浏览器访问 WAF 拦截，通过修改请求和响应头适配特定客户端需求。
 author: yaowuliu
+icon: https://hub.kelee.one/IMG/Web/favicon_32px.ico
 
 header_rewrites:
   - replace:

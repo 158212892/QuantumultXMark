@@ -1,4 +1,5 @@
 DOMAIN-SUFFIX,i109.com
-DOMAIN-SUFFIX,googleapis.com
+# DOMAIN-SUFFIX,googleapis.com
 DOMAIN-SUFFIX,film.reddust.link
 DOMAIN-KEYWORD,embyplus
+DOMAIN-SUFFIX,gsa.apple.com,sidestore

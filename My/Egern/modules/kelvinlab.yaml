@@ -1,0 +1,22 @@
+name: KelvinLab2Egern
+description: 使KelvinLab安装插件或者分流时直接跳转Egern, 最低版本{Egern v2.18.0(745)}
+# author: 
+open_url: https://kelvinlab.wuyra.com
+# homepage: 
+# icon: 
+# manual: 
+
+body_rewrites:
+- response_regex:
+    match: ^https?:\/\/kelvinlab\.wuyra\.com\/list.json
+    find: loon:\/\/import\?plugin=|surge:\/\/\/install-module\?url=
+    replace: egern:///modules/new?url=
+- response_regex:
+    match: ^https?:\/\/kelvinlab\.wuyra\.com\/list.json
+    find: https:\/\/www\.nsloon\.com\/openloon\/import\?rules=
+    replace: egern:///rules/new?type=rule_set&policy=DIRECT&match=
+
+mitm:
+  hostnames:
+    includes:
+      - kelvinlab.wuyra.com
