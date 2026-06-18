@@ -9,9 +9,10 @@ DOMAIN,ux.21cn.com
 DOMAIN-SUFFIX,tttml.com
 DOMAIN-SUFFIX,haimianxz.com
 DOMAIN-SUFFIX,leijing.xyz
-DOMAIN,app.localhost.qaq.wiki
 DOMAIN,ip4.me
 DOMAIN,ip6.me
 DOMAIN,ip6only.me
+# iOS签名ipa安装
 DOMAIN,app.localhost.qaq.wiki
 DOMAIN-SUFFIX,backloop.dev
+DOMAIN-SUFFIX,lcsignx.com
