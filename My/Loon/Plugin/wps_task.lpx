@@ -1,0 +1,33 @@
+#!name = WPS每日签到
+#!desc = WPS · 每日签到 + 福利中心(打卡/抽奖/会员试用申请/限量爆款领取)+ 小程序每日打卡，送积分与会员时长。请先开启「捕获Cookie」开关，然后打开「WPS」APP进入任意活动页触发抓取。
+#!author = MaYIHEI
+#!homepage = https://github.com/MaYIHEI/paperclip/tree/main/app/wps
+#!icon = https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/wps.png
+#!date = 2026-06-26 09:11:35
+
+[Argument]
+CaptureCookie = switch, false, true, tag=捕获Cookie, desc=控制是否捕获Cookie。抓取成功后建议关闭。
+CRONEXP = input, "10 9 * * *", tag=定时参数, desc=触发签到任务的 CRON 表达式（默认每天上午 09:10 点）。
+
+# ====== 任务开关配置（对应原脚本中的任务控制） ======
+# task_hot = switch, true, false, tag=开关-限量爆款, desc=每天10点抢超级会员或积分（建议开启）。
+# task_trial = switch, true, false, tag=开关-会员试用, desc=瓜分试用会员奖品（建议开启）。
+# task_signin = switch, true, false, tag=开关-每日签到, desc=常规每日签到获取积分（建议开启）。
+# task_fragment = switch, true, false, tag=开关-连续打卡领会员, desc=福利中心连续打卡领会员（建议开启）。
+# task_lottery = switch, true, false, tag=开关-天天抽奖, desc=每天10点后的免费抽奖（建议开启）。
+# task_clockin = switch, true, false, tag=开关-小程序打卡, desc=微信小程序每日打卡送时长（建议开启）。
+
+# # ====== 调试与运维工具 ======
+# wps_debug = switch, false, true, tag=调试日志, desc=开启后将在日志中打印接口原始响应体。
+# wps_clear = switch, false, true, tag=清除Cookie, desc=【危险】开启后运行一次脚本会彻底清除本地保存的 wps_sid。
+
+[Script]
+# 获取 Cookie 脚本
+http-request ^https:\/\/personal-act\.wps\.cn\/activity-rubik\/activity\/page_info tag=WPS Cookie捕获, script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.cookie.js, requires-body=false, img-url=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/wps.png, enabled={CaptureCookie}
+
+# 定时签到脚本（参考指定的引号+传参格式，将所有 UI 开关作为参数传入给环境，用于 $.getdata 读取）
+# cron {CRONEXP} script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js, tag=WPS每日签到, timeout=120, argument="wps_task_hot={task_hot}&wps_task_trial={task_trial}&wps_task_signin={task_signin}&wps_task_fragment={task_fragment}&wps_task_lottery={task_lottery}&wps_task_clockin={task_clockin}&wps_debug={wps_debug}&wps_clear={wps_clear}"
+cron {CRONEXP} script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js, tag=WPS每日签到, img-url=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/wps.png, enable=true
+
+[MITM]
+hostname = personal-act.wps.cn

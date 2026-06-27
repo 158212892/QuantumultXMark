@@ -24,6 +24,89 @@
           "desc": "大会员Cookie数据"
         }
       ]
+    },
+    {
+      "id": "MaYIHEI_WPS",
+      "name": "WPS每日签到",
+      "keys": [
+        "wps_sid",
+        "wps_task_hot",
+        "wps_task_trial",
+        "wps_task_signin",
+        "wps_task_fragment",
+        "wps_task_lottery",
+        "wps_task_clockin",
+        "wps_debug",
+        "wps_clear"
+      ],
+      "author": "@MaYIHEI",
+      "icon": "https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/wps.png",
+      "repo": "https://github.com/MaYIHEI/paperclip",
+      "settings": [
+        {
+          "id": "wps_sid",
+          "name": "WPS wps_sid (Cookie)",
+          "val": "",
+          "type": "text",
+          "desc": "通过脚本自动抓取，无需手动填写。若需手动更换可在此修改。"
+        },
+        {
+          "id": "wps_task_hot",
+          "name": "限量爆款",
+          "val": true,
+          "type": "boolean",
+          "desc": "每天10点抢超级会员或积分"
+        },
+        {
+          "id": "wps_task_trial",
+          "name": "会员试用",
+          "val": true,
+          "type": "boolean",
+          "desc": "瓜分试用会员奖品"
+        },
+        {
+          "id": "wps_task_signin",
+          "name": "每日签到",
+          "val": true,
+          "type": "boolean",
+          "desc": "常规每日签到获取积分"
+        },
+        {
+          "id": "wps_task_fragment",
+          "name": "连续打卡领会员",
+          "val": true,
+          "type": "boolean",
+          "desc": "福利中心连续打卡"
+        },
+        {
+          "id": "wps_task_lottery",
+          "name": "天天抽奖",
+          "val": true,
+          "type": "boolean",
+          "desc": "每天10点后的免费抽奖"
+        },
+        {
+          "id": "wps_task_clockin",
+          "name": "小程序打卡",
+          "val": true,
+          "type": "boolean",
+          "desc": "微信小程序每日打卡送时长"
+        },
+        {
+          "id": "wps_debug",
+          "name": "调试日志",
+          "val": false,
+          "type": "boolean",
+          "desc": "开启后在日志中打印接口原始响应体"
+        },
+        {
+          "id": "wps_clear",
+          "name": "清除本地 Cookie",
+          "val": false,
+          "type": "boolean",
+          "desc": "开启后运行一次脚本会彻底清除本地保存的 wps_sid"
+        }
+      ]
     }
   ]
 }
