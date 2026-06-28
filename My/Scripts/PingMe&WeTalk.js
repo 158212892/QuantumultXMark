@@ -194,7 +194,7 @@ function buildUrl(path, capture, overrideDeviceId) {
 // 统一包装的原版通知与控制台回显输出
 function notify(scriptName, title, body) {
   console.log(`【${scriptName} 通知】${title}\n${body}`);
-  $.msg(title, body);
+  $.msg(`【${scriptName} 通知】${title}`, body);
 }
 
 function genFakeDeviceId() {
