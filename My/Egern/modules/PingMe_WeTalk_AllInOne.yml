@@ -1,7 +1,7 @@
-name: "PingMe & WeTalk"
-description: "PingMe & WeTalk 自动化签到+视频奖励"
+name: "PingMe_WeTalk_AllInOne"
+description: "PingMe_WeTalk_AllInOne自动化签到+视频奖励"
 author: "TG@ZenMoFiShi@yaowuliu"
-icon: "checkmark.seal.fill"
+icon: https://raw.githubusercontent.com/axhani/icon/refs/heads/main/pingme&wetalk.png
 
 compat_arguments:
   CAPTURE_ENABLED: false
@@ -27,37 +27,21 @@ compat_arguments_schema:
     description: "自定义定时任务超时时间"
     default_value: 300
 
-  # RESET_PINGME_ACCOUNTS:
-  #   name: "清空PingMe账号"
-  #   description: "需要js触发清空操作，关闭后不进行清空操作"
-  #   options:
-    #   - true
-    #   - false
-    # default_value: false
-
-  # RESET_WETALK_ACCOUNTS:
-  #   name: "清空WeTalk账号"
-  #   description: "需要js触发清空操作，关闭后不进行清空操作"
-  #   options:
-    #   - true
-    #   - false
-    # default_value: false
-
-mitm:
-  hostnames:
-    - "api.pingmeapp.net"
-    - "api.wetalkapp.com"
-
 scriptings:
   - http_request:
       name: "账号抓取"
       match: "^https://api\\.(wetalkapp\\.com|pingmeapp\\.net)/app/queryBalanceAndBonus"
-      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/PingMe&WeTalk.js"
+      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/PingMe_WeTalk_AllInOne.js"
       timeout: 10
       disabled: {{{CAPTURE_ENABLED}}}
 
   - schedule:
       name: "定时任务"
       cron: "{{{CRON_TASK}}}"
-      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/PingMe&WeTalk.js"
+      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/PingMe_WeTalk_AllInOne.js"
       timeout: {{{CRON_TASK_TIMEOUT}}}
+
+mitm:
+  hostnames:
+    - "api.pingmeapp.net"
+    - "api.wetalkapp.com"

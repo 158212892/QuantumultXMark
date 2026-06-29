@@ -1,18 +1,47 @@
-name: "WeTalk Auto CheckIn"
-description: "WeTalk daily check-in + video bonus, multi-account support."
-icon: "checkmark.seal.fill"
+name: WeTalk自动化任务
+description: WeTalk自动化签到+视频奖励
+author: 怎么肥事 & yaowuliu
+icon: https://play-lh.googleusercontent.com/5ZrUOlwaiR80ExEfuakPVmDeOkXYSwbdv_BisCpt_wd6SLV6NZQyY2LuAcEnK32v2q1eWU8Ga40lBxwH7QGI=w480-h960-rw
+
+compat_arguments:
+  CAPTURE_ENABLED: false
+  CRON_TASK: "20 8,20 * * *"
+  CRON_TASK_TIMEOUT: 300
+
+compat_arguments_schema:
+  CAPTURE_ENABLED:
+    name: "禁用账号抓取"
+    description: "关闭后抓包脚本不再处理任何请求"
+    options:
+      - true
+      - false
+    default_value: false
+
+  CRON_TASK:
+    name: "定时任务"
+    description: "自定义任务运行时间"
+    default_value: "20 8,20 * * *"
+
+  CRON_TASK_TIMEOUT:
+    name: "定时任务超时时间"
+    description: "自定义定时任务超时时间"
+    default_value: 300
+
 scriptings:
   - http_request:
-      name: WeTalk账号抓取
+      name: "账号抓取"
       match: "^https://api\\.wetalkapp\\.com/app/queryBalanceAndBonus"
-      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/WeTalk_capture.js"
+      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/WeTalk.js"
       timeout: 10
+      disabled: {{{CAPTURE_ENABLED}}}
+
   - schedule:
-      name: WeTalk签到任务
-      cron: 30 */8 * * *
-      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/WeTalk_task.js"
-      timeout: 300
+      name: "定时任务"
+      cron: "{{{CRON_TASK}}}"
+      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/WeTalk.js"
+      timeout: {{{CRON_TASK_TIMEOUT}}}
+
 mitm:
   hostnames:
     includes:
-      - api.wetalkapp.net
+      - "api.wetalkapp.com"
