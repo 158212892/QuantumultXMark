@@ -27,7 +27,7 @@ http-request ^https:\/\/personal-act\.wps\.cn\/activity-rubik\/activity\/page_in
 
 # 定时签到脚本（参考指定的引号+传参格式，将所有 UI 开关作为参数传入给环境，用于 $.getdata 读取）
 # cron {CRONEXP} script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js, tag=WPS每日签到, timeout=120, argument="wps_task_hot={task_hot}&wps_task_trial={task_trial}&wps_task_signin={task_signin}&wps_task_fragment={task_fragment}&wps_task_lottery={task_lottery}&wps_task_clockin={task_clockin}&wps_debug={wps_debug}&wps_clear={wps_clear}"
-cron {CRONEXP} script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js, tag=WPS每日签到, img-url=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/wps.png, enable=true
+cron {CRONEXP} script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js, tag=WPS每日签到, timeout=120, img-url=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/wps.png, enable=true
 
 [MITM]
 hostname = personal-act.wps.cn

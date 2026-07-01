@@ -11,7 +11,7 @@ compat_arguments:
 compat_arguments_schema:
   CAPTURE_ENABLED:
     name: "禁用账号抓取"
-    description: "关闭后抓包脚本不再处理任何请求"
+    description: "开启‘禁用账号抓取‘后抓包脚本不再处理任何请求"
     options:
       - true
       - false
