@@ -1,0 +1,15 @@
+#!name = LiveContainer+SideStore
+#!desc = 将更新源的LiveContainer版本改为LiveContainer+SideStore。
+#!openUrl = https://github.com/LiveContainer/LiveContainer
+#!author = yaowuliu
+#!icon = https://raw.githubusercontent.com/LiveContainer/LiveContainer/main/screenshots/AppIcon1024.png
+#!tag = 功能增强
+#!system = ios
+#!loon_version = 3.4.0(962)
+
+[Script]
+# 匹配 LiveContainer 的夜间版 JSON 源，执行重写脚本
+http-response ^https:\/\/release-assets\.githubusercontent\.com\/.*apps_nightly\.json.* script-path=https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/Scripts/LiveContainer.js, requires-body=true, tag=JSON·LiveContainer重写
+
+[MitM]
+hostname = release-assets.githubusercontent.com
