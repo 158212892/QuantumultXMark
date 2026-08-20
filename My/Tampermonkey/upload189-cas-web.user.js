@@ -6,6 +6,7 @@
     // @author       liyk
     // @match        https://cloud.189.cn/*
     // @match        https://m.cloud.189.cn/*
+    // @match        https://h5.cloud.189.cn/*
     // @grant        GM_xmlhttpRequest
     // @grant        GM_setValue
     // @grant        GM_getValue
