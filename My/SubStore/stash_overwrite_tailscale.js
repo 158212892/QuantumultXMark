@@ -1,34 +1,37 @@
-function main(config, $arguments, scriptUrl) {
+// Tailscale inject script for Sub‑Store File‑Manager Script‑Action
+// Usage: xxx/tailscale.js#ts_authkey=tskey-auth-xxxx&ts_disable=1
+function main(config, args, scriptUrl) {
     const DEFAULT_AUTH_KEY = "";
-    const DEFAULT_TS_DISABLE = "false";
+    const DEFAULT_TS_DISABLE = "0";
 
-    // 解析远程脚本 #hash 参数
-    let hashArgs = {};
-    if (scriptUrl && scriptUrl.includes("#")) {
-        const hashStr = scriptUrl.split("#")[1];
-        new URLSearchParams(hashStr).forEach((v, k) => {
-            hashArgs[k] = v;
+    // 解析 #hash 参数，与 shiteThings 模板逻辑完全一致
+    const hashParam = {};
+    if (typeof scriptUrl === "string" && scriptUrl.includes("#")) {
+        const hashContent = scriptUrl.split("#")[1];
+        new URLSearchParams(hashContent).forEach((val, key) => {
+            hashParam[key] = val;
         });
     }
 
-    // 真实可用优先级：$arguments(面板) > hash(#) > 默认值
-    const userAuthKey = ($arguments?.ts_authkey ?? "").trim() || (hashArgs.ts_authkey ?? "").trim() || DEFAULT_AUTH_KEY;
-    const tsDisableRaw = ($arguments?.ts_disable ?? "").trim() || (hashArgs.ts_disable ?? "").trim() || DEFAULT_TS_DISABLE;
-    const tsDisable = tsDisableRaw.toLowerCase() === "true";
+    // 读取参数：hash > 默认值
+    const inputAuthKey = (hashParam.ts_authkey ?? "").trim() || DEFAULT_AUTH_KEY;
+    const inputDisableFlag = (hashParam.ts_disable ?? "").trim() || DEFAULT_TS_DISABLE;
+    // 1 = 禁用注入，0 = 启用注入（默认0）
+    const TS_DISABLE = inputDisableFlag === "1";
 
-    if (tsDisable) {
-        console.log("[Inject] ts_disable=true，跳过 Tailscale 注入");
+    if (TS_DISABLE) {
+        console.log("[Inject] ts_disable=1，跳过 Tailscale 注入");
         return config;
     }
 
-    const tsProxyItem = {
+    const tsProxy = {
         name: "ts-node",
         type: "tailscale",
-        "auth-key": userAuthKey,
+        "auth-key": inputAuthKey,
         ephemeral: false
     };
 
-    const tsGroupItem = {
+    const tsGroup = {
         name: "Tailscale",
         type: "select",
         proxies: ["ts-node", "DIRECT"],
@@ -39,21 +42,24 @@ function main(config, $arguments, scriptUrl) {
             "cellular": "ts-node"
         }
     };
-    const tsRuleItem = "IP-CIDR,192.168.1.0/24,Tailscale,no-resolve";
 
+    const tsRule = "IP-CIDR,192.168.1.0/24,Tailscale,no-resolve";
+
+    // 数组兜底初始化
     if (!Array.isArray(config.proxies)) config.proxies = [];
     if (!Array.isArray(config["proxy-groups"])) config["proxy-groups"] = [];
     if (!Array.isArray(config.rules)) config.rules = [];
 
-    config.proxies = config.proxies.filter(p => p.name !== tsProxyItem.name);
-    config.proxies.unshift(tsProxyItem);
+    // 删除旧项，向前插入，避免重复
+    config.proxies = config.proxies.filter(item => item.name !== tsProxy.name);
+    config.proxies.unshift(tsProxy);
 
-    config["proxy-groups"] = config["proxy-groups"].filter(g => g.name !== tsGroupItem.name);
-    config["proxy-groups"].unshift(tsGroupItem);
+    config["proxy-groups"] = config["proxy-groups"].filter(item => item.name !== tsGroup.name);
+    config["proxy-groups"].unshift(tsGroup);
 
-    config.rules = config.rules.filter(r => r !== tsRuleItem);
-    config.rules.unshift(tsRuleItem);
+    config.rules = config.rules.filter(r => r !== tsRule);
+    config.rules.unshift(tsRule);
 
-    console.log("[Inject] Tailscale injected, auth‑key len:", userAuthKey.length);
+    console.log("[Inject] Finished, auth‑key length:", inputAuthKey.length);
     return config;
 }
