@@ -1,4 +1,4 @@
-// Tailscale inject script for Sub‑Store File‑Manager Script‑Action
+！// Tailscale inject script for Sub‑Store File‑Manager Script‑Action
 // Usage: xxx/tailscale.js#ts_authkey=tskey-auth-xxxx&ts_disable=1
 function main(config, args, scriptUrl) {
     const DEFAULT_AUTH_KEY = "";
@@ -39,7 +39,8 @@ function main(config, args, scriptUrl) {
             "GL-MT6000-581": "DIRECT",
             "GL-MT6000-581-5G": "DIRECT",
             "default": "ts-node",
-            "cellular": "ts-node"
+            "cellular": "ts-node",
+        icon: "https://cdn.jsdelivr.net/gh/dkaser/unraid-tailscale/logo.png"
         }
     };
 
