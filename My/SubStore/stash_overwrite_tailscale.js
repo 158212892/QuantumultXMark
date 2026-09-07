@@ -1,4 +1,4 @@
-！// Tailscale inject script for Sub‑Store File‑Manager Script‑Action
+// Tailscale inject script for Sub‑Store File‑Manager Script‑Action
 // Usage: xxx/tailscale.js#ts_authkey=tskey-auth-xxxx&ts_disable=1
 function main(config, args, scriptUrl) {
     const DEFAULT_AUTH_KEY = "";
@@ -28,7 +28,7 @@ function main(config, args, scriptUrl) {
         name: "ts-node",
         type: "tailscale",
         "auth-key": inputAuthKey,
-        ephemeral: false
+        udp: true 
     };
 
     const tsGroup = {
