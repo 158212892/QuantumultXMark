@@ -1,8 +1,9 @@
-# DOMAIN-SUFFIX,googleapis.com
-# DOMAIN-SUFFIX,gsa.apple.com,sidestore
+# googleapis.com
+# gsa.apple.com,sidestore
 
-DOMAIN-KEYWORD,embyplus
-DOMAIN,mambo-hachimi.biliblili.uk
-DOMAIN,lite.cn2gias.uk
+v2.embyplus.org
+mambo-hachimi.biliblili.uk
+genshin.biliblili.uk
+lite.cn2gias.uk
 
-DOMAIN,re0.me
+re0.me
