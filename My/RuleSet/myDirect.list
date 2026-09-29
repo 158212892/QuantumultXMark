@@ -1,17 +1,19 @@
-DOMAIN-KEYWORD,wogg
-DOMAIN-KEYWORD,yiso
-DOMAIN-KEYWORD,943399
-DOMAIN-SUFFIX,tttml.com
-# DOMAIN-KEYWORD,lyrebirdemby
-DOMAIN-SUFFIX,macked.app
-DOMAIN-SUFFIX,m-team.cc
-# DOMAIN,ux.21cn.com
-DOMAIN-SUFFIX,haimianxz.com
-DOMAIN-SUFFIX,leijing.xyz
-DOMAIN,ip4.me
-DOMAIN,ip6.me
-DOMAIN,ip6only.me
+wogg.live
+wogg.net
+yiso.fun
+yiso.eu.org
+943399.xyz
+tttml.com
+# lyrebirdemby
+macked.app
+m-team.cc
+# ux.21cn.com
+haimianxz.com
+leijing.xyz
+ip4.me
+ip6.me
+ip6only.me
 # iOS签名ipa安装
-DOMAIN,app.localhost.qaq.wiki
-DOMAIN-SUFFIX,backloop.dev
-DOMAIN-SUFFIX,lcsignx.com
+app.localhost.qaq.wiki
+backloop.dev
+lcsignx.com
