@@ -1,0 +1,63 @@
+name: UA修改
+description: 通过修改请求和响应头适配特定客户端需求。
+author: yaowuliu
+icon: 
+
+header_rewrites:
+
+# 墨鱼 b站vip
+  - replace:
+      match: https://(app\.bilibili\.com\/x\/v2\/account\/mine\?)|(grpc\.biliapi\.net\/bilibili\.app\.playerunite\.v1\.Player\/PlayViewUnite)
+      name: User-Agent
+      value: grpc-c++/1.66.2 bili-universal/91200100 os/ios model/iPhone 15 Pro mobi_app/iphone osVer/27.0 network/2 grpc-c/43.0.0 (ios; ignet_http)
+      type: request
+  - replace:
+      match: https://bl-premium-proxy\.iwanderskye\.workers\.dev\/v1\/playviewunite$
+      name: User-Agent
+      value: CFNetwork/3896.100.1.2.1 Darwin/27.0.0
+      type: request
+
+# 墨鱼资源
+  - replace:
+      match: https://ddgksf2013\.top
+      name: User-Agent
+      value: Surge iOS/3835 SurgeCore/6009001
+      type: request
+  - add:
+      match: https://ddgksf2013\.top
+      name: x-surge-unlocked-features
+      value: ""
+      type: request
+  - add:
+      match: https://(ddgksf2013\.top)|(rucu6\.pages\.dev\/Plugins)
+      name: priority
+      value: u=3
+      type: request
+  - replace:
+      match: https://ddgksf2013\.top
+      name: Content-Type
+      value: text/plain;charset=utf-8
+      type: response
+  - replace:
+      match: https://rucu6\.pages\.dev\/Plugins
+      name: if-none-match
+      value: W/"8b7675a849d4202b40e61d58746e674b27764cfc2ae997b83ebf2dd0af26f144"
+      type: request
+  - replace:
+      match: https://rucu6\.pages\.dev\/Plugins
+      name: accept-encoding
+      value: gzip, deflate, br
+      type: request
+# rucu6资源
+  - replace:
+      match: https://rucu6\.pages\.dev
+      name: User-Agent
+      value: Loon/1004 CFNetwork/3896.100.1.2.1 Darwin/27.0.0
+      type: request
+
+mitm:
+  hostnames:
+    includes:
+      - bl-premium-proxy.iwanderskye.workers.dev
+      - ddgksf2013.top
+      - rucu6.pages.dev
