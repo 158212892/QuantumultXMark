@@ -19,22 +19,22 @@ header_rewrites:
 
 # 墨鱼资源
   - replace:
-      match: https://ddgksf2013\.top
+      match: https://ddgksf2013\.top\/(module|scripts)
       name: User-Agent
       value: Surge iOS/3835 SurgeCore/6009001
       type: request
   - add:
-      match: https://ddgksf2013\.top
+      match: https://ddgksf2013\.top\/(module|scripts)
       name: x-surge-unlocked-features
       value: ""
       type: request
   - add:
-      match: https://(ddgksf2013\.top)|(rucu6\.pages\.dev\/Plugins)
+      match: https://(ddgksf2013\.top\/(module|scripts))|(rucu6\.pages\.dev\/Plugins)
       name: priority
       value: u=3
       type: request
   - replace:
-      match: https://ddgksf2013\.top
+      match: https://ddgksf2013\.top\/(module|scripts)
       name: Content-Type
       value: text/plain;charset=utf-8
       type: response
