@@ -1,0 +1,18 @@
+#!name=腾讯视频净化
+#!desc=去除开屏广告、视频播放前广告、底部多余tab、我的页面美化
+#!author=TG@ZenMoFiShi
+#!icon=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/tenvideo.png
+
+[Rule]
+DOMAIN,iacc.stgw.qq.com,REJECT
+DOMAIN,tacc.video.qq.com,REJECT
+
+[Script]
+http-request ^https?:\/\/i\.video\.qq\.com\/(?:\?.*)?$ script-path=https://raw.githubusercontent.com/158212892/QuantumultXMark/main/My/Scripts/Txvideoad.js, requires-body=true, binary-body-mode=true, timeout=30, tag=腾讯视频-请求
+http-response ^https?:\/\/i\.video\.qq\.com\/(?:\?.*)?$ script-path=https://raw.githubusercontent.com/158212892/QuantumultXMark/main/My/Scripts/Txvideoad.js, requires-body=true, binary-body-mode=true, timeout=30, tag=腾讯视频-响应
+http-response ^https?:\/\/iacc\.qq\.com\/(?:\?.*)?$ script-path=https://raw.githubusercontent.com/158212892/QuantumultXMark/main/My/Scripts/Txvideoad.js, requires-body=true, binary-body-mode=true, timeout=30, tag=腾讯视频-iacc
+http-response ^https?:\/\/config\.ab\.qq\.com\/tab\/GetTabRemoteConfig(?:\?.*)?$ script-path=https://raw.githubusercontent.com/158212892/QuantumultXMark/main/My/Scripts/Txvideoad.js, requires-body=true, binary-body-mode=true, timeout=30, tag=腾讯视频-AB
+http-response ^https:\/\/rdelivery\.qq\.com\/v1\/sdkconfig\/get(?:\?.*)?$ script-path=https://raw.githubusercontent.com/158212892/QuantumultXMark/main/My/Scripts/Txvideoad.js, requires-body=true, timeout=10, tag=腾讯视频-rdelivery
+
+[MITM]
+hostname = i.video.qq.com, iacc.qq.com, config.ab.qq.com, rdelivery.qq.com
