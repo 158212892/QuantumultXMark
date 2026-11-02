@@ -1,8 +1,59 @@
 
 function main(config) {
-  const groups = config["proxy-groups"] || [];
+  // 全局配置
+  Object.assign(config, {
+    mode: "rule",
+    "mixed-port": 7890,
+    udp: true,
+    ipv6: true,
+    "allow-lan": true,
+    "skip-auth-prefixes": [
+      "127.0.0.1/8",
+      "::1/128",
+      "192.168.1.0/24",
+      "192.168.31.0/24",
+      "192.168.100.0/24",
+      "172.23.0.0/16",
+      "172.17.0.0/16",
+      "172.18.0.0/16",
+      "172.19.0.0/16",
+      "192.168.8.0/24"
+    ],
+    "external-controller": "127.0.0.1:9090",
+    secret: "",
+    "external-ui": "ui",
+    "external-ui-url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist-no-fonts.zip"
+  });
 
-  // 动态查找兜底策略组（不区分大小写）
+  // TUN 配置
+  config.tun = {
+    ...(config.tun || {}),
+    enable: false
+  };
+
+  // DNS 配置
+  config.dns = {
+    ...(config.dns || {}),
+    enable: true,
+    ipv6: true
+  };
+
+  // 自定义代理节点
+  // proxies:
+  //   - name: ts-node
+  //     type: tailscale
+  //     auth-key: ""
+  //     udp: true
+
+  // 自定义策略组
+  // proxy-groups:
+  //   - name: Tailscale
+  //     type: select
+  //     proxies:
+  //       - ts-node
+  //       - DIRECT
+
+  // 动态识别兜底策略组
   const keywords = [
     "final",
     "fallback",
@@ -18,6 +69,8 @@ function main(config) {
     "自动",
     "auto"
   ];
+
+  const groups = config["proxy-groups"] || [];
 
   let proxyTarget = "FINAL";
 

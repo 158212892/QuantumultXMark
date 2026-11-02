@@ -28,6 +28,7 @@ external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/downloa
 
 tun:
   enable: false
+  # stack: mips
   # loopback-address: 
   #   - 10.7.0.1
 
