@@ -1,0 +1,80 @@
+
+
+# 全局配置
+mode: rule
+mixed-port: 7890
+udp: true
+ipv6: true
+allow-lan: true
+# authentication: [user:password]
+skip-auth-prefixes:
+  - 127.0.0.1/8
+  - ::1/128
+  - 192.168.1.0/24
+  - 192.168.31.0/24
+  - 192.168.100.0/24
+  - 172.23.0.0/16
+  - 172.17.0.0/16
+  - 172.18.0.0/16
+  - 172.19.0.0/16
+  - 192.168.8.0/24
+
+# 外部控制 (API)
+external-controller: 127.0.0.1:9090
+secret: ""
+external-ui: ui
+external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist-no-fonts.zip"
+
+
+tun:
+  enable: false
+  # loopback-address: 
+  #   - 10.7.0.1
+
+dns:
+  enable: true
+  ipv6: true
+
+# proxy-providers:
+#   Primary: {<<: *base-provider, url: '', override: {additional-prefix: '[P] '}}
+#   # Backup:   {<<: *base-provider, url: 'YOUR_BACKUP_URL',  override: {additional-prefix: '[B] '}}
+
+
+# 自定义代理节点
+# proxies:
+  # tailscale
+  # - name: ts-node
+  #   type: tailscale
+  #   auth-key: ""  # tskey-auth-xxxx # 可选；不填写时首次启动会输出交互式登录 URL
+  #   udp: true # 是否启用 UDP，默认 false
+
+# proxy-groups:
+#   - name: Tailscale
+#     type: select
+#     icon: https://cdn.jsdelivr.net/gh/dkaser/unraid-tailscale/logo.png
+#     proxies:
+#       - ts-node
+#       - DIRECT
+#     ssid-policy:
+#       GL-MT6000-581: DIRECT
+#       GL-MT6000-581-5G: DIRECT
+#       default: ts-node
+#       cellular: ts-node
+
+rules:
+  # tailscale
+  # - DOMAIN-SUFFIX,ts.net,mihomo-node
+  # - IP-CIDR6,fd7a:115c:a1e0::/48,mihomo-node,no-resolve
+  # - IP-CIDR,100.64.0.0/10,mihomo-node,no-resolve
+  # - IP-CIDR,192.168.1.0/24,mihomo-node,no-resolve
+  
+  # 自定义规则
+  - RULE-SET,myDirect,DIRECT
+  - RULE-SET,myReject,REJECT
+  - RULE-SET,myProxy,FINAL
+  
+rule-providers:
+  # 自定义规则
+  myDirect: {type: http, interval: 86400, behavior: classical, path: ./rule_set/myDirect.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myDirect.list'}
+  myReject: {type: http, interval: 86400, behavior: classical, path: ./rule_set/myReject.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myReject.list'}
+  myProxy: {type: http, interval: 86400, behavior: classical, path: ./rule_set/myProxy.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myProxy.list'}
