@@ -76,6 +76,6 @@ rules:
   
 rule-providers:
   # 自定义规则
-  myDirect: {type: http, interval: 86400, behavior: classical, path: ./rule_set/myDirect.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myDirect.list'}
-  myReject: {type: http, interval: 86400, behavior: classical, path: ./rule_set/myReject.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myReject.list'}
-  myProxy: {type: http, interval: 86400, behavior: classical, path: ./rule_set/myProxy.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myProxy.list'}
+  myDirect: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myDirect.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myDirect.list'}
+  myReject: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myReject.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myReject.list'}
+  myProxy: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myProxy.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myProxy.list'}

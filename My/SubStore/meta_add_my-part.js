@@ -105,7 +105,7 @@ function main(config) {
     myDirect: {
       type: "http",
       interval: 86400,
-      behavior: "classical",
+      behavior: "domain",
       path: "./rule_set/myDirect.list",
       format: "text",
       url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myDirect.list"
@@ -114,7 +114,7 @@ function main(config) {
     myReject: {
       type: "http",
       interval: 86400,
-      behavior: "classical",
+      behavior: "domain",
       path: "./rule_set/myReject.list",
       format: "text",
       url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myReject.list"
@@ -123,7 +123,7 @@ function main(config) {
     myProxy: {
       type: "http",
       interval: 86400,
-      behavior: "classical",
+      behavior: "domain",
       path: "./rule_set/myProxy.list",
       format: "text",
       url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myProxy.list"
