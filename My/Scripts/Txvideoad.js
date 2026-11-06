@@ -1,6 +1,7 @@
 // 腾讯视频净化 - 多平台兼容版 (QX / Loon / Surge / Egern / Stash)
 // 原作者: TG@ZenMoFiShi
-// 2026-10-28
+// 上游更新: 2026-11-03（新增开屏广告处理）
+// 兼容转换: 2026-11-06
 
 (() => {
   const TAB_DROP_KEYS = ["smallvideo_entrance", "goods_entrance"];
@@ -33,6 +34,7 @@
   const JCE_PLAY_TIPS = 126577;
   const JCE_ROLL_ADS = [129278, 130273];
   const JCE_PAUSE_AD = 129196;
+  const JCE_SPLASH = 129279;          // ← 新增
   const DROP = {};
 
   function utf8(s) {
@@ -82,7 +84,7 @@
   }
   function toBuf(u) { return u.buffer.slice(u.byteOffset, u.byteOffset + u.byteLength); }
 
-  // ========== 以下全部原逻辑保持不变 ==========
+  // ========== 压缩相关（完整保留） ==========
   const LB = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258];
   const LE = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0];
   const DB = [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577];
@@ -222,6 +224,7 @@
     return o;
   }
 
+  // ========== Protobuf / JCE 解析（完整保留） ==========
   let VP = 0;
   function rv(b, p, e) {
     let x = 0, m = 1, c;
@@ -473,6 +476,7 @@
     return gz ? gzip(out) : out;
   }
 
+  // ========== JCE 部分 ==========
   function jHead(b, p) {
     const c = b[p];
     let tag = c >> 4;
@@ -632,11 +636,26 @@
     edits.set(w, nw);
     return jRebuild(b, s, e, fs, edits);
   }
+  // ========== 新增：开屏广告处理 ==========
+  function fixSplash(b, s, e) {
+    if (find(b, utf8("ad_splash"), s, e) < 0 && find(b, utf8("SpaServerData"), s, e) < 0) return null;
+    const fs = jFields(b, s, e), edits = new Map();
+    for (const x of fs) {
+      if ((x.tag === 2 || x.tag === 3 || x.tag === 4) && x.t === 9 && jInt(b, x.vs) > 0) {
+        edits.set(x, concat([new Uint8Array(jHeadEnc(x.tag, 9)), jIntEnc(0, 0)]));
+      }
+    }
+    return edits.size ? jRebuild(b, s, e, fs, edits) : null;
+  }
   function onJce(raw) {
     const b = raw, n = b.length;
     if (n < 100 || b[0] !== 0x13 || u32(b, 1) !== n || b[n - 1] !== 0x03) return null;
     const cmd = (b[8] << 16) | (b[9] << 8) | b[10];
-    const fix = cmd === JCE_TEEN_CONFIG ? fixTeenConfig : cmd === JCE_PLAY_TIPS ? fixPlayTips : JCE_ROLL_ADS.indexOf(cmd) >= 0 ? fixRollAds : cmd === JCE_PAUSE_AD ? fixPauseAd : null;
+    const fix = cmd === JCE_TEEN_CONFIG ? fixTeenConfig :
+                cmd === JCE_PLAY_TIPS ? fixPlayTips :
+                JCE_ROLL_ADS.indexOf(cmd) >= 0 ? fixRollAds :
+                cmd === JCE_PAUSE_AD ? fixPauseAd :
+                cmd === JCE_SPLASH ? fixSplash : null;   // ← 新增
     if (!fix) return null;
     const gz = find(b, new Uint8Array([0x1f, 0x8b, 0x08]), 60, Math.min(n, 140));
     if (gz < 4) return null;
@@ -659,6 +678,7 @@
     return out;
   }
 
+  // ========== AB Config ==========
   const SIMPLE_KEY = "simple_mode_config";
   function patchSimpleMode(js) {
     let o;
@@ -732,18 +752,15 @@
     return gz ? gzip(out) : out;
   }
 
-  // ========== 关键的多平台 main ==========
+  // ========== 多平台 main ==========
   function main() {
     const url = $request.url || "";
     const host = (url.split("/")[2] || "").split(":")[0];
     const isResp = typeof $response !== "undefined" && $response !== null;
-
-    // 判断当前环境是否支持 bodyBytes（主要是 QX）
     const useBodyBytes = typeof $request !== "undefined" && ("bodyBytes" in $request || (isResp && "bodyBytes" in $response));
 
     try {
       if (!isResp) {
-        // Request
         let b = null;
         if (useBodyBytes) {
           b = host === "i.video.qq.com" ? toU8($request.bodyBytes) : null;
@@ -751,15 +768,10 @@
           b = host === "i.video.qq.com" ? toU8($request.body) : null;
         }
         const r = b && b.length ? onTrpcRequest(b) : null;
-        if (r) {
-          $done(useBodyBytes ? { bodyBytes: toBuf(r) } : { body: r });
-        } else {
-          $done({});
-        }
+        $done(r ? (useBodyBytes ? { bodyBytes: toBuf(r) } : { body: r }) : {});
         return;
       }
 
-      // Response
       if (host === "rdelivery.qq.com") {
         const s = typeof $response.body === "string" ? $response.body : "";
         const o = /"tab_gray"\s*:\s*true/.test(s) ? s.replace(/("tab_gray"\s*:\s*)true/, "$1false") : null;
@@ -781,11 +793,7 @@
         else if (host === "config.ab.qq.com" && url.split("?")[0].endsWith("/tab/GetTabRemoteConfig")) r = onAbConfig(b);
       }
 
-      if (r) {
-        $done(useBodyBytes ? { bodyBytes: toBuf(r) } : { body: r });
-      } else {
-        $done({});
-      }
+      $done(r ? (useBodyBytes ? { bodyBytes: toBuf(r) } : { body: r }) : {});
     } catch (e) {
       console.log("txvideo-ad-clean: " + e);
       $done({});
