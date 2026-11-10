@@ -1,5 +1,3 @@
-
-
 # 全局配置
 mode: rule
 mixed-port: 7890
@@ -29,7 +27,7 @@ external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/downloa
 tun:
   enable: false
   # stack: mips
-  # loopback-address: 
+  # loopback-address:
   #   - 10.7.0.1
 
 dns:
@@ -68,14 +66,26 @@ rules:
   # - IP-CIDR6,fd7a:115c:a1e0::/48,mihomo-node,no-resolve
   # - IP-CIDR,100.64.0.0/10,mihomo-node,no-resolve
   # - IP-CIDR,192.168.1.0/24,mihomo-node,no-resolve
-  
+
   # 自定义规则
   - RULE-SET,myDirect,DIRECT
   - RULE-SET,myReject,REJECT
   - RULE-SET,myProxy,FINAL
-  
+
+  # AppleAI / PanVod / ResourceSite 系列规则
+  - RULE-SET,AppleAI,AI
+  - RULE-SET,PanVod,DIRECT
+  - RULE-SET,ResourceSite,DIRECT
+  - RULE-SET,ResourceSite1,DIRECT
+
 rule-providers:
   # 自定义规则
   myDirect: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myDirect.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myDirect.list'}
   myReject: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myReject.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myReject.list'}
   myProxy: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myProxy.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myProxy.list'}
+
+  AppleAI: {type: http, interval: 86400, behavior: classical, path: ./rule_set/AppleAI.list, format: text, url: 'https://ghfast.top/https://raw.githubusercontent.com/ddgksf2013/Filter/refs/heads/master/AppleIntelligence.list'}
+  
+  PanVod: {type: http, interval: 86400, behavior: classical, path: ./rule_set/PanVod.list, format: text, url: 'https://ghfast.top/https://raw.githubusercontent.com/eulac-dev/Proxy/refs/heads/main/Shadowrocket/Rules/PanVod.list'}
+  ResourceSite: {type: http, interval: 86400, behavior: classical, path: ./rule_set/ResourceSite.list, format: text, url: 'https://ghfast.top/https://raw.githubusercontent.com/eulac-dev/Proxy/refs/heads/main/Shadowrocket/Rules/ResourceSite.list'}
+  ResourceSite1: {type: http, interval: 86400, behavior: classical, path: ./rule_set/ResourceSite1.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/refs/heads/main/My/RuleSet/ResourceSite1.list'}
