@@ -1,0 +1,45 @@
+# > 玩偶
+DOMAIN,woggpan.xxooo.cf,DIRECT
+DOMAIN,woggpan.888484.xyz,DIRECT
+DOMAIN,wogg.xxooo.cf,DIRECT
+DOMAIN,www.wogg.net,DIRECT
+
+# > 木偶
+DOMAIN,www.muou.site,DIRECT
+DOMAIN,666.666291.xyz,DIRECT
+DOMAIN,123.666291.xyz,DIRECT
+DOMAIN,www.muou.asia,DIRECT
+
+# > 蜡笔
+DOMAIN,feimo.fun,DIRECT
+DOMAIN,www.xiaocgege.shop,DIRECT
+DOMAIN,xiaocgege.shop,DIRECT
+
+# > 闪电
+DOMAIN,sd.sduc.site,DIRECT
+DOMAIN,shandian.blog,DIRECT
+
+# > 至臻
+DOMAIN,www.mihdr.top,DIRECT
+DOMAIN,mihdr.top,DIRECT
+DOMAIN,www.miqk.cc,DIRECT
+DOMAIN,zhizhen1.top,DIRECT
+
+# > 多多
+DOMAIN,tv.yydsys.top,DIRECT
+DOMAIN,yydsys.de5.net,DIRECT
+DOMAIN,tv.yydsys.cc,DIRECT
+DOMAIN,tv.214521.xyz,DIRECT
+
+# > 欧哥
+DOMAIN,woog.430520.xyz,DIRECT
+DOMAIN,woog.nxog.fun,DIRECT
+DOMAIN,woog.nxog.eu.org,DIRECT
+
+# > 二小
+DOMAIN,wexwp.cc,DIRECT
+DOMAIN,www.wexwp.cc,DIRECT
+DOMAIN,www.2xiaopan.top,DIRECT
+
+# > 虎斑 / 小斑 (IP直连)
+IP-CIDR,121.205.88.174/32,DIRECT,no-resolve
