@@ -36,7 +36,7 @@ function main(config) {
     ipv6: true
   };
 
-  // ========== 规则集基础模板（已修正 behavior: ipcidr，mihomo 内核标准值） ==========
+  // ========== 规则集基础模板 ==========
   // classical：支持完整规则行 DOMAIN‑SUFFIX / DOMAIN‑KEYWORD / IP‑CIDR 混合
   const baseProviderClassical = {
     type: "http",
@@ -61,12 +61,10 @@ function main(config) {
 
   // ========== 策略组工具 ==========
   const groups = Array.isArray(config["proxy-groups"]) ? config["proxy-groups"] : [];
-  // 把内置出口/关键字排除，避免误命中
   const RESERVED = ["DIRECT", "REJECT", "PASS", "COMPATIBLE"];
   function isUsableName(name) {
     return typeof name === "string" && name.trim() !== "" && !RESERVED.includes(name);
   }
-  // 按关键字列表顺序（不区分大小写）返回第一个命中的策略组名
   function matchGroupByKeywords(keywords) {
     for (const kw of keywords) {
       const lower = kw.toLowerCase();
@@ -90,16 +88,14 @@ function main(config) {
     "fallback",
     "final"
   ];
-  // 找不到兜底组时退化为 DIRECT，避免返回不存在的 "FINAL"
   const proxyTarget = matchGroupByKeywords(fallbackKeywords) || "DIRECT";
-  // ========== 2. AppleAI 出口（AI / 美国 / US 多关键字逐级匹配）==========
-  // 注意：这里判断 "AI" 用区分大小写的 includes，避免 "Tailscale" 这类含 ai 子串的组被误判
+  // ========== 2. AppleAI 出口 ==========
   const aiMatchers = [
-    (n) => n.includes("AI"),                // 1) 大写 AI：Gpt‑AI / AI / AI节点
+    (n) => n.includes("AI"),
     (n) => n.includes("人工智能"),
     (n) => n.includes("GPT") || n.includes("gpt"),
-    (n) => n.includes("美国"),              // 2) 中文「美国」
-    (n) => /\bUS\b/i.test(n) || n.includes("US"), // 3) US / 🇺🇸 US
+    (n) => n.includes("美国"),
+    (n) => /\bUS\b/i.test(n) || n.includes("US"),
     (n) => n.includes("🇺🇸")
   ];
   let aiTarget = null;
@@ -110,11 +106,10 @@ function main(config) {
       break;
     }
   }
-  // 全部没命中时，回退到兜底组，保证规则出口一定有效
   if (!aiTarget) aiTarget = proxyTarget;
+
   // ========== 3. 自定义规则 ==========
   const customRules = [
-    // 影视爬虫与播放源专属分流
     "RULE-SET,vod_direct_rule,DIRECT",
     `RULE-SET,vod_proxy_rule,${proxyTarget}`,
     "RULE-SET,myDirect,DIRECT",
@@ -128,21 +123,23 @@ function main(config) {
   const existRules = (config.rules || []).filter(r => !customRules.includes(String(r)));
   config.rules = [...customRules, ...existRules];
 
-  // ========== 4. 规则集 path 全部统一为 ./rule_set/ 目录，url带 ghfast.top镜像 ==========
+  // ========== 4. 规则集 ==========
   config["rule-providers"] = {
     ...(config["rule-providers"] || {}),
-    // 新增：影视vod规则集
+    // 新增：影视vod规则集，源文件为yaml，覆盖 format: "yaml"
     vod_direct_rule: {
       ...baseProviderClassical,
+      format: "yaml",
       url: "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/Shadow-Rocket/refs/heads/main/hdys_vod_direct.yaml",
       path: "./rule_set/hdys_vod_direct.yaml"
     },
     vod_proxy_rule: {
       ...baseProviderClassical,
+      format: "yaml",
       url: "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/Shadow-Rocket/refs/heads/main/hdys_vod_proxy.yaml",
       path: "./rule_set/hdys_vod_proxy.yaml"
     },
-    // 自定义规则‑domain类型
+    // 自定义规则‑domain类型（text格式 *.list）
     myDirect: {
       ...baseProviderDomain,
       path: "./rule_set/myDirect.list",
@@ -158,19 +155,16 @@ function main(config) {
       path: "./rule_set/myProxy.list",
       url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/main/My/RuleSet/myProxy.list"
     },
-    // AppleAI classical
     AppleAI: {
       ...baseProviderClassical,
       path: "./rule_set/AppleAI.list",
       url: "https://ghfast.top/https://raw.githubusercontent.com/ddgksf2013/Filter/refs/heads/master/AppleIntelligence.list"
     },
-    // 网盘点播 classical
     PanVod: {
       ...baseProviderClassical,
       path: "./rule_set/PanVod.list",
       url: "https://ghfast.top/https://raw.githubusercontent.com/eulac-dev/Proxy/refs/heads/main/Shadowrocket/Rules/PanVod.list"
     },
-    // 资源站 classical
     ResourceSite: {
       ...baseProviderClassical,
       path: "./rule_set/ResourceSite.list",
