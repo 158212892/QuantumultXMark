@@ -9,7 +9,7 @@
 
 [Script]
 # 匹配 LiveContainer 的夜间版 JSON 源，执行重写脚本
-http-response ^https:\/\/release-assets\.githubusercontent\.com\/.*apps_nightly\.json.* script-path=https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/My/script/LiveContainer.js, requires-body=true, tag=JSON·LiveContainer重写
+http-response ^https:\/\/release-assets\.githubusercontent\.com\/.*apps_nightly\.json.* script-path=https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/script/LiveContainer.js, requires-body=true, tag=JSON·LiveContainer重写
 
 [MitM]
 hostname = release-assets.githubusercontent.com

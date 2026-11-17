@@ -31,14 +31,14 @@ scriptings:
   - http_request:
       name: "账号抓取"
       match: "^https://api\\.pingmeapp\\.net/app/queryBalanceAndBonus"
-      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/My/script/PingMe.js"
+      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/script/PingMe.js"
       timeout: 10
       disabled: {{{CAPTURE_ENABLED}}}
 
   - schedule:
       name: "定时任务"
       cron: "{{{CRON_TASK}}}"
-      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/My/script/PingMe.js"
+      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/script/PingMe.js"
       timeout: {{{CRON_TASK_TIMEOUT}}}
 
 mitm:

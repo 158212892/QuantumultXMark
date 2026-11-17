@@ -31,14 +31,14 @@ scriptings:
   - http_request:
       name: "账号抓取"
       match: "^https://api\\.(wetalkapp\\.com|pingmeapp\\.net)/app/queryBalanceAndBonus"
-      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/My/script/PingMe_WeTalk_AllInOne.js"
+      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/script/PingMe_WeTalk_AllInOne.js"
       timeout: 10
       disabled: {{{CAPTURE_ENABLED}}}
 
   - schedule:
       name: "定时任务"
       cron: "{{{CRON_TASK}}}"
-      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/My/script/PingMe_WeTalk_AllInOne.js"
+      script_url: "https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/script/PingMe_WeTalk_AllInOne.js"
       timeout: {{{CRON_TASK_TIMEOUT}}}
 
 mitm:

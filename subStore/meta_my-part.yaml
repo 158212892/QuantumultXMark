@@ -80,12 +80,12 @@ rules:
 
 rule-providers:
   # 自定义规则
-  myDirect: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myDirect.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/My/ruleSet/myDirect.list'}
-  myReject: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myReject.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/My/ruleSet/myReject.list'}
-  myProxy: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myProxy.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/My/ruleSet/myProxy.list'}
+  myDirect: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myDirect.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/ruleSet/myDirect.list'}
+  myReject: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myReject.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/ruleSet/myReject.list'}
+  myProxy: {type: http, interval: 86400, behavior: domain, path: ./rule_set/myProxy.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/ruleSet/myProxy.list'}
 
   AppleAI: {type: http, interval: 86400, behavior: classical, path: ./rule_set/AppleAI.list, format: text, url: 'https://ghfast.top/https://raw.githubusercontent.com/ddgksf2013/Filter/refs/heads/master/AppleIntelligence.list'}
   
   PanVod: {type: http, interval: 86400, behavior: classical, path: ./rule_set/PanVod.list, format: text, url: 'https://ghfast.top/https://raw.githubusercontent.com/eulac-dev/Proxy/refs/heads/main/Shadowrocket/Rules/PanVod.list'}
   ResourceSite: {type: http, interval: 86400, behavior: classical, path: ./rule_set/ResourceSite.list, format: text, url: 'https://ghfast.top/https://raw.githubusercontent.com/eulac-dev/Proxy/refs/heads/main/Shadowrocket/Rules/ResourceSite.list'}
-  ResourceSite1: {type: http, interval: 86400, behavior: classical, path: ./rule_set/ResourceSite1.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/My/ruleSet/ResourceSite1.list'}
+  ResourceSite1: {type: http, interval: 86400, behavior: classical, path: ./rule_set/ResourceSite1.list, format: text, url: 'https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/ruleSet/ResourceSite1.list'}

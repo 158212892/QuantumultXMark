@@ -143,17 +143,17 @@ function main(config) {
     myDirect: {
       ...baseProviderDomain,
       path: "./rule_set/myDirect.list",
-      url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/My/ruleSet/myDirect.list"
+      url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/ruleSet/myDirect.list"
     },
     myReject: {
       ...baseProviderDomain,
       path: "./rule_set/myReject.list",
-      url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/My/ruleSet/myReject.list"
+      url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/ruleSet/myReject.list"
     },
     myProxy: {
       ...baseProviderDomain,
       path: "./rule_set/myProxy.list",
-      url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/My/ruleSet/myProxy.list"
+      url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/personal/ruleSet/myProxy.list"
     },
     AppleAI: {
       ...baseProviderClassical,
@@ -173,7 +173,7 @@ function main(config) {
     ResourceSite1: {
       ...baseProviderClassical,
       path: "./rule_set/ResourceSite1.list",
-      url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/My/ruleSet/ResourceSite1.list"
+      url: "https://ghfast.top/https://github.com/158212892/QuantumultXMark/raw/refs/heads/personal/ruleSet/ResourceSite1.list"
     }
   };
 
