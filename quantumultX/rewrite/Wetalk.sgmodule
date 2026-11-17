@@ -1,0 +1,9 @@
+#!name=WeTalk
+#!desc=WeTalk
+
+[Script]
+WeTalk = type=http-request, pattern=^https:\/\/api\.wetalkapp\.com\/app\/(?:queryBalanceAndBonus|checkIn|videoBonus), script-path=https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/WeTalk.js, timeout=60,compat=quantumult-x
+WeTalk签到 = type=cron,cronexp="30 8,20 * * *",script-path=https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/WeTalk.js,compat=quantumult-x
+
+[MITM]
+hostname = %APPEND% api.wetalkapp.com

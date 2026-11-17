@@ -1,0 +1,51 @@
+name: Stash MitM
+desc: 由 Stash 管理的 MitM 主机、改写与 CA 证书。
+
+ipv6: true
+
+proxies:
+  - name: ts-node
+    type: tailscale
+    auth-key: ""
+    udp: true
+
+proxy-groups:
+  - name: Tailscale
+    type: select
+    icon: https://raw.githubusercontent.com/dkaser/unraid-tailscale/main/logo.png
+    proxies:
+      - ts-node
+      - DIRECT
+    ssid-policy:
+      GL-MT6000-581: DIRECT
+      GL-MT6000-581-5G: DIRECT
+      ChinaNet-7D08: DIRECT
+      ChinaNet-7D08_5G: DIRECT
+      default: ts-node
+      cellular: ts-node
+
+rules:
+  # - DOMAIN-SUFFIX,tailscale.com,DIRECT
+  # - DOMAIN-SUFFIX,tailscale.io,DIRECT
+  # - DOMAIN-SUFFIX,ts.net,mihomo-node
+  # - IP-CIDR6,fd7a:115c:a1e0::/48,mihomo-node,no-resolve
+  # - IP-CIDR,100.64.0.0/10,mihomo-node,no-resolve
+  - IP-CIDR,192.168.1.0/24,Tailscale,no-resolve
+
+http:
+  ca: 
+  ca-passphrase: 
+  mitm:
+    - '*.altstore.io'
+    - raw.githubusercontent.com
+    - xitrix.github.io
+  body-rewrite:
+    - '#^https?:\/\/raw\.githubusercontent\.com\/Michael-128\/qBitControl-releases\/main\/source\.json$ response-jq .apps[0] |= (.patreon={})' # qBitControl源
+    - '#^https:\/\/xitrix\.github\.io\/iTorrent\/ADP\/manifest\.json$ response-jq .apps[0] |= (.patreon={})' # iTorrent源
+    - https?:\/\/cdn\.altstore\.io\/file\/altstore\/marketplace\.json$ response-jq .apps[3] |= (.patreon={}) # altstore pal官方源
+    - '#api\.altstore\.io\/install‑token request-jq .bundleID=""' # 更改bundleID
+  url-rewrite:
+    - '#^(https:\/\/(.*altstore-classic.*))2_3\/(.*)$ ${1}2_3_rc/${3} header' # altstore-classic 
+    - '#^(https:\/\/(.*delta.*))1_7_3\/(.*)$ ${1}2_0_b5/${3} header' # Delta
+category: 0配置覆写
+icon: https://stash.wiki/favicon.ico
